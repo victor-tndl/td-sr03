@@ -44,61 +44,74 @@ public class UserManager extends HttpServlet{
  * @throws SQLException 
  * @throws ClassNotFoundException 
     */
-   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+   protected void doRequest(HttpServletRequest request, HttpServletResponse response)
            throws ServletException, IOException, ClassNotFoundException, SQLException {
-       response.setContentType("text/html;charset=UTF-8");
-       HttpSession session = request.getSession();
-       if (session.getAttribute("login") == null || !"admin".equals(session.getAttribute("role"))) {
-           try (PrintWriter out = response.getWriter()) {
-               /* TODO output your page here. You may use following sample code. */
-               out.println("<!DOCTYPE html>");
-               out.println("<html>");
-               out.println("<head>");
-               out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-               out.println("<title> Non autorisé</title>");
-               out.println("</head>");
-               out.println("<body>");
-               out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-               out.println("</body>");
-               out.println("</html>");
-           }
+        
+        // Send html response
+        response.setContentType("text/html;charset=UTF-8");
 
-       } else {
-           String familyName = request.getParameter("User first name");
-           String lastName = request.getParameter("User familly name");
-           String mail = request.getParameter("User email");
-           String gender = request.getParameter("gender");
-           String password = request.getParameter("User password");
-           User user = new User(lastName, familyName, mail, gender, password);
-           if (request.getParameter("role") != null) {
-               user.setRole(request.getParameter("role"));
-           }
-           usersTable.put(usersTable.size(), user);
-           // user.save();
-           response.setContentType("text/html;charset=UTF-8");
-           try (PrintWriter out = response.getWriter()) {
-               /* TODO output your page here. You may use following sample code. */
-               out.println("<!DOCTYPE html>");
-               out.println("<html>");
-               out.println("<head>");
-               out.println("<title>Nouvel utilisateur</title>");
-               out.println("</head>");
-               out.println("<body>");
-               out.println("<li>Un nouveau utilisateur est ajouté</li>");
-               out.println(usersTable.get(usersTable.size() - 1).toString());
-               out.println("<li><a href='create_user.html'>Ajouter un nouvel utilisateur</a></li>");
-               out.println("<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>");
-               out.println("<li><a href='Deconnexion'>Déconnecter</a></li>");
-               out.println("</body>");
-               out.println("</html>");
+        HttpSession session = request.getSession();
+        if (session.getAttribute("login") == null || !"Admin".equals(session.getAttribute("role"))) {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+                out.println("<title> Non autorisé</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
+                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
+                out.println("</body>");
+                out.println("</html>");
+            }
 
-           }
-       }
+        } else {
+
+            // Get values from the form
+            String familyName = request.getParameter("User first name");
+            String lastName = request.getParameter("User familly name");
+            String mail = request.getParameter("User email");
+            String gender = request.getParameter("gender");
+            String password = request.getParameter("User password");
+
+            // Create the user
+            User user = new User(lastName, familyName, mail, password, gender);
+
+            if (request.getParameter("role") != null) {
+                user.setRole(request.getParameter("role"));
+            }
+
+            // Save the user
+            // TODO: Use comment code
+            usersTable.put(usersTable.size(), user);
+            // user.save();
+
+            // Send html response
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Nouvel utilisateur</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<li>Un nouveau utilisateur est ajouté</li>");
+                out.println(usersTable.get(usersTable.size() - 1).toString());
+                // out.println(user.toString());
+                out.println("<li><a href='create_user.html'>Ajouter un nouvel utilisateur</a></li>");
+                out.println("<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>");
+                out.println("<li><a href='Deconnexion'>Déconnecter</a></li>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        }
    }
 
-   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
    /**
-    * Handles the HTTP <code>GET</code> method.
+    * Handles the HTTP GET method.
     *
     * @param request servlet request
     * @param response servlet response
@@ -108,57 +121,73 @@ public class UserManager extends HttpServlet{
    @Override
    protected void doGet(HttpServletRequest request, HttpServletResponse response)
            throws ServletException, IOException {
-       response.setContentType("text/html;charset=UTF-8");
-       response.setContentType("text/html;charset=UTF-8");
-       HttpSession session = request.getSession();
-       if (session.getAttribute("login") == null || "admin".equals(session.getAttribute("role"))==false) {
-           try (PrintWriter out = response.getWriter()) {
-               /* TODO output your page here. You may use following sample code. */
-               out.println("<!DOCTYPE html>");
-               out.println("<html>");
-               out.println("<head>");
-               out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
-               out.println("<title> Non autorisé</title>");
-               out.println("</head>");
-               out.println("<body>");
-               out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin => redirigé vers la page connexion </h1>");
-               out.println("</body>");
-               out.println("</html>");
-           }
 
-       } else {
-           try (PrintWriter out = response.getWriter()) {
-               /* TODO output your page here. You may use following sample code. */
-               out.println("<!DOCTYPE html>");
-               out.println("<html>");
-               out.println("<head>");
-               out.println("<title>Un nouveau utilisateur </title>");
-               out.println("</head>");
-               out.println("<body>");
-               out.println("<h1> Liste des utilisateurs : </h1>");
-               out.println("<ul>");
+        // Get user's session
+        HttpSession session = request.getSession();
 
-               Set<Integer> keys = usersTable.keySet();
+        // Send html response
+        response.setContentType("text/html;charset=UTF-8");
 
-               //Obtaining iterator over set entries
-               Iterator<Integer> itr = keys.iterator();
-               while (itr.hasNext()) {
-                   out.println("<li>");
-                   out.println(usersTable.get(itr.next()).toString());
-                   out.println("</li>");
-               }
-               out.println("</ul>");
-               out.println("</body>");
-               out.println("</html>");
-           }
-       }
+        if (session.getAttribute("login") == null || "Admin".equals(session.getAttribute("role"))==false) {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+                out.println("<title> Non autorisé</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
+                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        } else {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Un nouvel utilisateur</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Liste des utilisateurs:</h1>");
+                out.println("<ul>");
+
+                Set<Integer> keys = usersTable.keySet();
+
+                // Obtaining iterator over set entries
+                Iterator<Integer> itr = keys.iterator();
+                while (itr.hasNext()) {
+                    out.println("<li>");
+                    out.println(usersTable.get(itr.next()).toString());
+                    out.println("</li>");
+                }
+
+                // // TODO: Use this code instead of usersTable
+                // List<User> users = User.findAll();
+
+                // // Iterate over all the users
+                // Iterator<User> usersIterator = users.iterator();
+                // User searchedUser = null;
+                // while(usersIterator.hasNext()) {
+                //     out.println("<li>");
+                //     out.println(usersIterator.next().toString());
+                //     out.println("</li>"); 
+                // }
+                out.println("</ul>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        }
    }
    
    @Override
    protected void doPost(HttpServletRequest request, HttpServletResponse response)
            throws ServletException, IOException {
        try {
-			processRequest(request, response);
+			doRequest(request, response);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -173,6 +202,4 @@ public class UserManager extends HttpServlet{
 			e.printStackTrace();
 		}
    }
-
-
 }

@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
-
+import 
 public class ConfigConnectionClass {
 
 	private static Connection connection = null; 

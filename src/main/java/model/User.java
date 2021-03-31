@@ -10,18 +10,24 @@ import java.util.List;
 
 public class User extends ActiveRecordBase {
 
+	// TODO: Remove id, autoIncrement and their dependencies
 	private int id;
     private static int autoIncrement=0;
 	private String firstName;
 	private String familyName;
 	private String login;
 	private String password;
-	private String gender;
+	private Genders gender = Genders.Male;
 	private Roles role = Roles.Other;
 
 	private enum Roles {
 		Other,
 		Admin
+	}
+
+	private enum Genders {
+		Male,
+		Female
 	}
 
 	public User(String firstName, String familyName, String login, String password, String gender) {
@@ -31,7 +37,7 @@ public class User extends ActiveRecordBase {
 		this.familyName = familyName;
 		this.login = login;
 		this.password = password;
-		this.gender = gender;
+		this.gender = Genders.valueOf(gender);
 		this.id = User.autoIncrement;
 	}
 	
@@ -46,7 +52,7 @@ public class User extends ActiveRecordBase {
         this.firstName = res.getString(2);
         this.familyName = res.getString(3);
         this.login = res.getString(4);
-        this.gender = res.getString("gender");
+        this.gender = Genders.values()[res.getBoolean("gender") ? 1 : 0];
         this.role = Roles.values()[res.getBoolean("is_admin") ? 1 : 0];
         this._buitFromDB = true;
 	}
@@ -83,10 +89,10 @@ public class User extends ActiveRecordBase {
 		this.password = password;
 	}
 	public String getGender() {
-		return gender;
+		return gender.toString();
 	}
 	public void setGender(String gender) {
-		this.gender = gender;
+		this.gender = Genders.valueOf(gender);
 	}
 	public int getId() {
 		return id;
@@ -106,40 +112,56 @@ public class User extends ActiveRecordBase {
 	// SQL queries
 	@Override
 	protected String _insert() {
-		return "INSERT INTO User"
+		return "INSERT INTO user"
 				+ " VALUES(nextavl('id'), '"+ id 
-				+ ", firstName=" + firstName
-				+ ", familyName=" + familyName
+				+ ", first_name=" + firstName
+				+ ", family_name=" + familyName
 				+ ", login=" + login
 				+ ", password=" + password
-				+ ", gender=" + gender
+				+ ", gender=" + (gender == Genders.Male ? "1" : "0")
 				+ ", `is_admin` = '" + (role == Roles.Admin ? "1" : "0")
 				+ "')" ;
 	}
 
 	@Override
 	protected String _update() {
-		return "UPDATE User"
-				+ " SET firstName=" + firstName
-				+ "	SET familyName=" + familyName
+		return "UPDATE user"
+				+ " SET first_name=" + firstName
+				+ "	SET family_name=" + familyName
 				+ " SET login=" + login
 				+ "	SET password=" + password
-				+ "	SET gender=" + gender
+				+ "	SET gender=" + (gender == Genders.Male ? "1" : "0")
 				+ "	SET `is_admin` = '" + (role == Roles.Admin ? "1" : "0")
 				+ " WHERE id=" + id;
 	}
 	
 	@Override
 	protected String _delete() {
-		return "DELETE FROM User WHERE id=" + id;
+		return "DELETE FROM user WHERE id=" + id;
 	}
 
-	public List<User> findAll() throws ClassNotFoundException, IOException, SQLException {
+	public static User findByFamilyNameAndFirstName(String firstNameParam, String familyNameParam ) throws ClassNotFoundException, IOException, SQLException {
+        
+        Connection conn = ConfigConnectionClass.getConnection();
+        Statement sql = conn.createStatement();
+        ResultSet res = sql.executeQuery("SELECT *FROM user" 
+			+ "WHERE first_name=" + firstNameParam
+			+ "family_name=" + familyNameParam );
+
+        if (res.next()) {
+            User user= new User(res);
+            return user;
+        }
+
+        return null;	
+	}
+
+	public static List<User> findAll() throws ClassNotFoundException, IOException, SQLException {
 		List <User>  users = new ArrayList<User>() ;
         
         Connection conn = ConfigConnectionClass.getConnection();
         Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM User");
+        ResultSet res = sql.executeQuery("SELECT * FROM user");
 
         while (res.next()) {
             User newUser= new User (res);
