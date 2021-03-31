@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 
-@WebServlet(name = "DeconnexionController", urlPatterns = {"/deconnect"})
+@WebServlet(name = "deconnexionController", urlPatterns = {"/deconnexionController"})
 public class DeconnexionController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;

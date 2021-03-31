@@ -3,9 +3,8 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,11 +15,10 @@ import javax.servlet.http.HttpSession;
 
 import model.User;
 
-@WebServlet(name = "UserManager", urlPatterns = {"/UserManager"})
+@WebServlet(name = "userManager", urlPatterns = {"/userManager"})
 public class UserManager extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
-	private static Hashtable<Integer,User> usersTable = new Hashtable<Integer, User>();
 
 	/**
      * @return 
@@ -28,14 +26,10 @@ public class UserManager extends HttpServlet{
      */
    public UserManager() {
 	   super();
-	   // TODO Auto-generated constructor stub
    }
 
-   public static Hashtable<Integer,User> getUsersTable() {
-	   return usersTable;
-   }
    /**
-    * Processes requests for both HTTP  <code>POST</code> methods.
+    * Processes requests for both HTTP POST methods.
     *
     * @param request servlet request
     * @param response servlet response
@@ -84,9 +78,7 @@ public class UserManager extends HttpServlet{
             }
 
             // Save the user
-            // TODO: Use comment code
-            usersTable.put(usersTable.size(), user);
-            // user.save();
+            user.save();
 
             // Send html response
             response.setContentType("text/html;charset=UTF-8");
@@ -99,11 +91,10 @@ public class UserManager extends HttpServlet{
                 out.println("</head>");
                 out.println("<body>");
                 out.println("<li>Un nouveau utilisateur est ajouté</li>");
-                out.println(usersTable.get(usersTable.size() - 1).toString());
-                // out.println(user.toString());
-                out.println("<li><a href='create_user.html'>Ajouter un nouvel utilisateur</a></li>");
-                out.println("<li><a href='UserManager'>Afficher la liste des utilisateurs</a></li>");
-                out.println("<li><a href='Deconnexion'>Déconnecter</a></li>");
+                out.println(user.toString());
+                out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
+                out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
+                out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                 out.println("</body>");
                 out.println("</html>");
             }
@@ -154,28 +145,22 @@ public class UserManager extends HttpServlet{
                 out.println("<body>");
                 out.println("<h1>Liste des utilisateurs:</h1>");
                 out.println("<ul>");
+                
+                try {
+                	List<User> users = User.findAll();
 
-                Set<Integer> keys = usersTable.keySet();
+                    // Iterate over all the users
+                    Iterator<User> usersIterator = users.iterator();
+                    while(usersIterator.hasNext()) {
+                        out.println("<li>");
+                        out.println(usersIterator.next().toString());
+                        out.println("</li>"); 
+                    }
+                } catch (Exception e) {
+					e.printStackTrace();
+				}
+                
 
-                // Obtaining iterator over set entries
-                Iterator<Integer> itr = keys.iterator();
-                while (itr.hasNext()) {
-                    out.println("<li>");
-                    out.println(usersTable.get(itr.next()).toString());
-                    out.println("</li>");
-                }
-
-                // // TODO: Use this code instead of usersTable
-                // List<User> users = User.findAll();
-
-                // // Iterate over all the users
-                // Iterator<User> usersIterator = users.iterator();
-                // User searchedUser = null;
-                // while(usersIterator.hasNext()) {
-                //     out.println("<li>");
-                //     out.println(usersIterator.next().toString());
-                //     out.println("</li>"); 
-                // }
                 out.println("</ul>");
                 out.println("</body>");
                 out.println("</html>");

@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.User;
 
-@WebServlet(name = "UserValidation", urlPatterns = {"/users_validation"})
+@WebServlet(name = "userValidation", urlPatterns = {"/userValidation"})
 public class UserValidation extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -67,13 +68,14 @@ public class UserValidation extends HttpServlet{
                 // Abort insertion
                 rd.forward(request, response);
             }
-
         } else {
-            // TODO: Use this code
-            // User user = User.findByFamilyNameAndFirstName(familyName, firstName);
-            // if (user != false) {
-
-            if (UserManager.getUsersTable().containsValue(new User(familyName, firstName))) {
+            User user = null;
+            try {
+                user = User.findByFamilyNameAndFirstName(familyName, firstName);
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+            if (user != null) {
                 isUserValid = false;
                 try (PrintWriter out = response.getWriter()) {
                     // TODO: Improve and use jsp

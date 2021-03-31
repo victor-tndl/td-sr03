@@ -10,9 +10,6 @@ import java.util.List;
 
 public class User extends ActiveRecordBase {
 
-	// TODO: Remove id, autoIncrement and their dependencies
-	private int id;
-    private static int autoIncrement=0;
 	private String firstName;
 	private String familyName;
 	private String login;
@@ -32,17 +29,14 @@ public class User extends ActiveRecordBase {
 
 	public User(String firstName, String familyName, String login, String password, String gender) {
 		super();
-		autoIncrement++;
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.login = login;
 		this.password = password;
 		this.gender = Genders.valueOf(gender);
-		this.id = User.autoIncrement;
 	}
 	
 	public User(String firstName, String familyName) {
-		autoIncrement++;
 		this.firstName = firstName;
 		this.familyName = familyName;
 	}
