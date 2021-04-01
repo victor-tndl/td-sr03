@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import model.User;
 
-@WebServlet(name = "userManager", urlPatterns = {"/userManager"})
+@WebServlet(name ="userManager",urlPatterns={"/userManager"})
 public class UserManager extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -78,7 +78,11 @@ public class UserManager extends HttpServlet{
             }
 
             // Save the user
-            user.save();
+            try {
+                user.save();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
             // Send html response
             response.setContentType("text/html;charset=UTF-8");
