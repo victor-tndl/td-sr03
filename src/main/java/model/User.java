@@ -23,8 +23,8 @@ public class User extends ActiveRecordBase {
 	}
 
 	private enum Genders {
-		Male,
-		Female
+		Female,
+		Male
 	}
 
 	public User(String firstName, String familyName, String login, String password, String gender) {
@@ -43,9 +43,10 @@ public class User extends ActiveRecordBase {
 	
 	public User(ResultSet res) throws SQLException {
 		this.id = res.getInt("id");
-        this.firstName = res.getString(2);
-        this.familyName = res.getString(3);
-        this.login = res.getString(4);
+        this.firstName = res.getString("first_name");
+        this.familyName = res.getString("family_name");
+        this.login = res.getString("login");
+        this.password = res.getString("password");
         this.gender = Genders.values()[res.getBoolean("gender") ? 1 : 0];
         this.role = Roles.values()[res.getBoolean("is_admin") ? 1 : 0];
         this._buitFromDB = true;
@@ -106,27 +107,26 @@ public class User extends ActiveRecordBase {
 	// SQL queries
 	@Override
 	protected String _insert() {
-		return "INSERT INTO user"
-				+ " VALUES(nextavl('id'), '"+ id 
-				+ ", first_name=" + firstName
-				+ ", family_name=" + familyName
-				+ ", login=" + login
-				+ ", password=" + password
-				+ ", gender=" + (gender == Genders.Male ? "1" : "0")
-				+ ", `is_admin` = '" + (role == Roles.Admin ? "1" : "0")
-				+ "')" ;
+		return "INSERT INTO user (family_name, first_name, login, password, is_admin, gender)"
+				+ " VALUES("
+				+ "'" + familyName +  "',"
+				+ "'" + firstName +  "',"
+				+ "'" + login +  "',"
+				+ "'" + password +  "',"
+				+ "'" + (role == Roles.Admin ? "1" : "0") +  "',"
+				+ "'" + (gender == Genders.Male ? "1" : "0") +  "');";
 	}
 
 	@Override
 	protected String _update() {
 		return "UPDATE user"
 				+ " SET first_name=" + firstName
-				+ "	SET family_name=" + familyName
-				+ " SET login=" + login
-				+ "	SET password=" + password
-				+ "	SET gender=" + (gender == Genders.Male ? "1" : "0")
-				+ "	SET `is_admin` = '" + (role == Roles.Admin ? "1" : "0")
-				+ " WHERE id=" + id;
+				+ ", SET family_name=" + familyName
+				+ ", SET login=" + login
+				+ ", SET password=" + password
+				+ ", SET gender=" + (gender == Genders.Male ? "1" : "0")
+				+ ", SET is_admin = " + (role == Roles.Admin ? "1" : "0")
+				+ ", WHERE id=" + id;
 	}
 	
 	@Override
@@ -138,9 +138,9 @@ public class User extends ActiveRecordBase {
         
         Connection conn = ConfigConnectionClass.getConnection();
         Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT *FROM user" 
-			+ "WHERE first_name=" + firstNameParam
-			+ "family_name=" + familyNameParam );
+        ResultSet res = sql.executeQuery("SELECT * FROM user" 
+			+ " WHERE first_name='" + firstNameParam + "'"
+			+ " AND family_name='" + familyNameParam +"'" );
 
         if (res.next()) {
             User user= new User(res);
@@ -158,7 +158,7 @@ public class User extends ActiveRecordBase {
         ResultSet res = sql.executeQuery("SELECT * FROM user");
 
         while (res.next()) {
-            User newUser= new User (res);
+            User newUser= new User(res);
             users.add(newUser);
         }
 

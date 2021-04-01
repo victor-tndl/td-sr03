@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import model.User;
 
 
-@WebServlet(name = "connexionController", urlPatterns = {"/connexionController"})
+@WebServlet(name="connexionController",urlPatterns={"/connexionController"})
 public class ConnexionController extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -38,10 +39,10 @@ public class ConnexionController extends HttpServlet{
         List<User> users = User.findAll();
 
         // Iterate over all the users
-        Iterator<User> usersIterator = users.iterator();
         User searchedUser = null;
-        while(usersIterator.hasNext() && searchedUser != null) {
-            User user = usersIterator.next();
+
+        for (ListIterator<User> usersIterator = users.listIterator(); usersIterator.hasNext();) {
+        	User user = usersIterator.next();
             if (user.getLogin().equals(request.getParameter("username"))
             		&& user.getPassword().equals(request.getParameter("password"))) {
             	searchedUser = user;
@@ -173,18 +174,5 @@ public class ConnexionController extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
-        User user = new User("admin", "admin", "admin@admin", "admin", "Male");
-        user.setRole("Admin");
-
-        try {
-			user.save();
-			System.out.println("here");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
     }
 }

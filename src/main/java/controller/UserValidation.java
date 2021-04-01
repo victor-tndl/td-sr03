@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import model.User;
 
-@WebServlet(name = "userValidation", urlPatterns = {"/userValidation"})
+@WebServlet(name="userValidation",urlPatterns={"/userValidation"})
 public class UserValidation extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
@@ -86,9 +86,9 @@ public class UserValidation extends HttpServlet{
                     out.println("</head>");
                     out.println("<body>");
                     out.println("<h1>Un utilisateur avec les mêmes nom et prénom existe déjà. Voulez-vous l'enregistrer ?  </h1>");
-                    out.println("<form method='POST' action='UserValidation'>");
+                    out.println("<form method='POST' action='userValidation'>");
                     out.println("Oui <input type='radio' name='valider' value='oui' /> ");
-                    out.println("Nom <input type='radio' name='valider' value='nom' />");
+                    out.println("Nom <input type='radio' name='valider' value='non' />");
                     out.println("<input type='hidden' name='User first name' value='" + firstName + "'/>");
                     out.println("<input type='hidden' name='User familly name' value='" + familyName + "'/>");
                     out.println("<input type='hidden' name='User email' value='" + login + "'/>");
@@ -104,7 +104,7 @@ public class UserValidation extends HttpServlet{
         }
         
         if (isUserValid) {
-            RequestDispatcher rd = request.getRequestDispatcher("UserManager");
+            RequestDispatcher rd = request.getRequestDispatcher("userManager");
             rd.forward(request, response);
         }
 	}
