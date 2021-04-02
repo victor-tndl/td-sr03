@@ -40,8 +40,8 @@ public class ForumValidation extends HttpServlet{
 
 			// Get values from the form
 			String title = request.getParameter("title");
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");	
-			Date date = df.parse(request.getParameter("date"));;
+			DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'HH:MM");	
+			Date date = df.parse(request.getParameter("date"));
 			Date time_validity = df.parse(request.getParameter("time_validity"));
 
 			if (title == null || date.equals(null) || time_validity.equals(null)) {

@@ -56,8 +56,8 @@ public class ForumManager extends HttpServlet {
         } else {
             // Get values from the form
 			String title = request.getParameter("title");
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");	
-			Date date = df.parse(request.getParameter("date"));;
+			DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'HH:MM");	
+			Date date = df.parse(request.getParameter("date"));
 			Date time_validity = df.parse(request.getParameter("time_validity"));
 
             // Create the forum
