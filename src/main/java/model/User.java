@@ -27,18 +27,18 @@ public class User extends ActiveRecordBase {
 		Male
 	}
 
-	public User(String firstName, String familyName, String login, String password, String gender) {
+	public User(String _firstName, String _familyName, String _login, String _password, String _gender) {
 		super();
-		this.firstName = firstName;
-		this.familyName = familyName;
-		this.login = login;
-		this.password = password;
-		this.gender = Genders.valueOf(gender);
+		this.firstName = _firstName;
+		this.familyName = _familyName;
+		this.login = _login;
+		this.password = _password;
+		this.gender = Genders.valueOf(_gender);
 	}
 	
-	public User(String firstName, String familyName) {
-		this.firstName = firstName;
-		this.familyName = familyName;
+	public User(String _firstName, String _familyName) {
+		this.firstName = _firstName;
+		this.familyName = _familyName;
 	}
 	
 	public User(ResultSet res) throws SQLException {
@@ -58,7 +58,8 @@ public class User extends ActiveRecordBase {
                + ", email=" + login  + ", gender=" + gender + ","
                 + " password=" + password + '}';
     }
-		
+
+	// Setters and getters
 	public String getFirstName() {
 		return firstName;
 	}
@@ -134,16 +135,46 @@ public class User extends ActiveRecordBase {
 		return "DELETE FROM user WHERE id=" + id;
 	}
 
-	public static User findByFamilyNameAndFirstName(String firstNameParam, String familyNameParam ) throws ClassNotFoundException, IOException, SQLException {
+	public static User findByFamilyNameAndFirstName(String _first_name, String _family_name) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
         Statement sql = conn.createStatement();
         ResultSet res = sql.executeQuery("SELECT * FROM user" 
-			+ " WHERE first_name='" + firstNameParam + "'"
-			+ " AND family_name='" + familyNameParam +"'" );
+			+ " WHERE first_name='" + _first_name + "'"
+			+ " AND family_name='" + _family_name +"'" );
 
         if (res.next()) {
-            User user= new User(res);
+            User user = new User(res);
+            return user;
+        }
+
+        return null;	
+	}
+
+	public static User findByLogin(String _login) throws ClassNotFoundException, IOException, SQLException {
+        
+        Connection conn = ConfigConnectionClass.getConnection();
+        Statement sql = conn.createStatement();
+        ResultSet res = sql.executeQuery("SELECT * FROM user" 
+			+ " WHERE login='" + _login + "'");
+
+        if (res.next()) {
+            User user = new User(res);
+            return user;
+        }
+
+        return null;	
+	}
+
+	public static User findById(int _id) throws ClassNotFoundException, IOException, SQLException {
+        
+        Connection conn = ConfigConnectionClass.getConnection();
+        Statement sql = conn.createStatement();
+        ResultSet res = sql.executeQuery("SELECT * FROM user" 
+			+ " WHERE id='" + _id + "'");
+
+        if (res.next()) {
+            User user = new User(res);
             return user;
         }
 
@@ -158,7 +189,7 @@ public class User extends ActiveRecordBase {
         ResultSet res = sql.executeQuery("SELECT * FROM user");
 
         while (res.next()) {
-            User newUser= new User(res);
+            User newUser = new User(res);
             users.add(newUser);
         }
 

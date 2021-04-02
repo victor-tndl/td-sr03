@@ -35,8 +35,8 @@ public class UserManager extends HttpServlet{
     * @param response servlet response
     * @throws ServletException if a servlet-specific error occurs
     * @throws IOException if an I/O error occurs
- * @throws SQLException 
- * @throws ClassNotFoundException 
+    * @throws SQLException 
+    * @throws ClassNotFoundException 
     */
    protected void doRequest(HttpServletRequest request, HttpServletResponse response)
            throws ServletException, IOException, ClassNotFoundException, SQLException {
@@ -60,7 +60,6 @@ public class UserManager extends HttpServlet{
                 out.println("</body>");
                 out.println("</html>");
             }
-
         } else {
 
             // Get values from the form
@@ -78,11 +77,7 @@ public class UserManager extends HttpServlet{
             }
 
             // Save the user
-            try {
-                user.save();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+            user.save();
 
             // Send html response
             response.setContentType("text/html;charset=UTF-8");
@@ -97,6 +92,7 @@ public class UserManager extends HttpServlet{
                 out.println("<li>Un nouveau utilisateur est ajouté</li>");
                 out.println(user.toString());
                 out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
+                out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
                 out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
                 out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                 out.println("</body>");

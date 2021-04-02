@@ -55,6 +55,19 @@ public class UserValidation extends HttpServlet{
             RequestDispatcher rd = request.getRequestDispatcher("create_user.html");
             rd.forward(request, response);
             isUserValid = false;
+        } else {
+            User user = null;
+            try {
+                user = User.findByLogin(login);
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
+            }
+            if (user == null) {
+                System.out.println("email déjà utilisé");
+                RequestDispatcher rd = request.getRequestDispatcher("create_user.html");
+                rd.forward(request, response);
+                isUserValid = false;
+            }
         }
 
         if (request.getParameter("validator") != null) {
