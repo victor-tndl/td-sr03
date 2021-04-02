@@ -3,7 +3,6 @@ package controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -80,7 +79,6 @@ public class ConnexionController extends HttpServlet{
                 out.println("<h1>Echec :mot de passe érroné </h1>");
                 out.println("</body>");
                 out.println("</html>");
-
             }
         } else {
             HttpSession session = request.getSession();
@@ -97,6 +95,7 @@ public class ConnexionController extends HttpServlet{
                     out.println("<nav> <ul>");
                     out.println("<li>Connected</li>");
                     out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
+                    out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
                     out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
                     out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                     out.println("</ul>");
@@ -174,5 +173,11 @@ public class ConnexionController extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
+        User user = new User("admin","admin", "admin@admin", "admin", "Male");
+        try {
+            user.save();
+        } catch (ClassNotFoundException | SQLException | IOException e) {
+            System.out.println("User already exist");
+        }
     }
 }
