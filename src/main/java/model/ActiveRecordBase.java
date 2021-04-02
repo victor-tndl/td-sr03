@@ -23,13 +23,12 @@ public abstract class ActiveRecordBase {
 			statement.executeUpdate(_update());
 		} else {
 			System.out.println("Executing command:" + _insert() + "\n");
-			statement.executeUpdate(_insert());
+			statement.executeUpdate(_insert(), Statement.RETURN_GENERATED_KEYS);
 			_buitFromDB = true;
 		}
-		
-		statement.executeUpdate(_insert(), Statement.RETURN_GENERATED_KEYS);
+
 		ResultSet result = statement.getGeneratedKeys();
-		
+
 		while (result.next()) {
 			id = result.getInt(1);
 		}
