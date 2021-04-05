@@ -13,14 +13,14 @@ public class Forum extends ActiveRecordBase {
 
 	String title;
 	Date date;
-	Date time_validity;
+	Date end_date;
   	User owner = null;
 
-	public Forum(String _title, Date _date, Date _time_validity, User _owner) {
+	public Forum(String _title, Date _date, Date _end_date, User _owner) {
 		super();
 		this.title = _title;
 		this.date = _date;
-		this.time_validity = _time_validity;
+		this.end_date = _end_date;
 		this.owner = _owner;
 	}
 
@@ -28,7 +28,7 @@ public class Forum extends ActiveRecordBase {
 		this.id = res.getInt("id");
 		this.title = res.getString("title");
 		this.date = res.getDate("date");
-		this.time_validity = res.getDate("time_validity");
+		this.end_date = res.getDate("end_date");
 		this.owner = User.findById(res.getInt("owner_id"));
         this._buitFromDB = true;
 	}
@@ -36,7 +36,7 @@ public class Forum extends ActiveRecordBase {
 	@Override
     public String toString() {
         return "Forum {" + "title=" + title + ", date=" + date + ""
-               + ", time validity=" + time_validity  + ", owner=" + owner.getFamilyName() + '}';
+               + ", time validity=" + end_date  + ", owner=" + owner.getFamilyName() + '}';
     }
 
 	// Setters and getters
@@ -58,11 +58,11 @@ public class Forum extends ActiveRecordBase {
 	public void setDate(Date _date) {
 		this.date = _date;
 	}
-	public Date getTimeValidity() {
-		return time_validity;
+	public Date getEndDate() {
+		return end_date;
 	}
-	public void setTimeValidity(Date _time_validity) {
-		this.time_validity = _time_validity;
+	public void setEndDate(Date _end_date) {
+		this.end_date = _end_date;
 	}
 	public User getOwner() {
 		return owner;
@@ -74,11 +74,11 @@ public class Forum extends ActiveRecordBase {
 	// SQL queries
 	@Override
 	protected String _insert() {
-		return "INSERT INTO forum (title, date, time_validity, owner_id)"
+		return "INSERT INTO forum (title, date, end_date, owner_id)"
 				+ " VALUES("
 				+ "'" + title +  "',"
 				+ "'" + date +  "',"
-				+ "'" + time_validity +  "',"
+				+ "'" + end_date +  "',"
 				+ "'" + owner.getId() +  "');";
 	}
 
@@ -87,7 +87,7 @@ public class Forum extends ActiveRecordBase {
 		return "UPDATE forum"
 				+ " SET title=" + title
 				+ ", SET date=" + date
-				+ ", SET time_validity=" + time_validity
+				+ ", SET end_date=" + end_date
 				+ ", SET owner_id=" + owner.getId()
 				+ ", WHERE id=" + id;
 	}

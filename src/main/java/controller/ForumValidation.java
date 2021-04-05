@@ -41,15 +41,15 @@ public class ForumValidation extends HttpServlet{
 			// Get values from the form
 			String title = request.getParameter("title");
 			DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'HH:MM");	
-			Date date = df.parse(request.getParameter("date"));
-			Date time_validity = df.parse(request.getParameter("time_validity"));
+			Date begin_date = df.parse(request.getParameter("begin_date"));
+			Date end_date = df.parse(request.getParameter("end_date"));
 
-			if (title == null || date.equals(null) || time_validity.equals(null)) {
+			if (title == null || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs non renseignés");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
 				rd.forward(request, response);
 				isForumValid = false;
-			} else if ("".equals(title) || date.equals(null) || time_validity.equals(null)) {
+			} else if ("".equals(title) || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs vides");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
 				rd.forward(request, response);
