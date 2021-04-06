@@ -6,20 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Forum extends ActiveRecordBase {
 
 	String title;
-	Date date;
-	Date end_date;
+	String begin_date;
+	String end_date;
   	User owner = null;
 
-	public Forum(String _title, Date _date, Date _end_date, User _owner) {
+	public Forum(String _title, String _begin_date, String _end_date, User _owner) {
 		super();
 		this.title = _title;
-		this.date = _date;
+		this.begin_date = _begin_date;
 		this.end_date = _end_date;
 		this.owner = _owner;
 	}
@@ -27,15 +26,15 @@ public class Forum extends ActiveRecordBase {
 	public Forum(ResultSet res) throws SQLException, ClassNotFoundException, IOException {
 		this.id = res.getInt("id");
 		this.title = res.getString("title");
-		this.date = res.getDate("date");
-		this.end_date = res.getDate("end_date");
+		this.begin_date = res.getString("begin_date");
+		this.end_date = res.getString("end_date");
 		this.owner = User.findById(res.getInt("owner_id"));
         this._buitFromDB = true;
 	}
 
 	@Override
     public String toString() {
-        return "Forum {" + "title=" + title + ", date=" + date + ""
+        return "Forum {" + "title=" + title + ", begin_date=" + begin_date + ""
                + ", time validity=" + end_date  + ", owner=" + owner.getFamilyName() + '}';
     }
 
@@ -52,16 +51,16 @@ public class Forum extends ActiveRecordBase {
 	public void setTitle(String _title) {
 		this.title = _title;
 	}
-	public Date getDate() {
-		return date;
+	public String getBeginDate() {
+		return begin_date;
 	}
-	public void setDate(Date _date) {
-		this.date = _date;
+	public void setBeginDate(String _date) {
+		this.begin_date = _date;
 	}
-	public Date getEndDate() {
+	public String getEndDate() {
 		return end_date;
 	}
-	public void setEndDate(Date _end_date) {
+	public void setEndDate(String _end_date) {
 		this.end_date = _end_date;
 	}
 	public User getOwner() {
@@ -74,10 +73,10 @@ public class Forum extends ActiveRecordBase {
 	// SQL queries
 	@Override
 	protected String _insert() {
-		return "INSERT INTO forum (title, date, end_date, owner_id)"
+		return "INSERT INTO forum (title, begin_date, end_date, owner_id)"
 				+ " VALUES("
 				+ "'" + title +  "',"
-				+ "'" + date +  "',"
+				+ "'" + begin_date +  "',"
 				+ "'" + end_date +  "',"
 				+ "'" + owner.getId() +  "');";
 	}
@@ -86,7 +85,7 @@ public class Forum extends ActiveRecordBase {
 	protected String _update() {
 		return "UPDATE forum"
 				+ " SET title=" + title
-				+ ", SET date=" + date
+				+ ", SET begin_date=" + begin_date
 				+ ", SET end_date=" + end_date
 				+ ", SET owner_id=" + owner.getId()
 				+ ", WHERE id=" + id;

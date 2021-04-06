@@ -56,13 +56,15 @@ public class ForumManager extends HttpServlet {
         } else {
             // Get values from the form
 			String title = request.getParameter("title");
-			DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'HH:MM");	
-			Date date = df.parse(request.getParameter("date"));
-			Date time_validity = df.parse(request.getParameter("time_validity"));
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			Date begin_date = df.parse(request.getParameter("begin_date")+":00Z");
+			Date end_date = df.parse(request.getParameter("end_date")+":00Z");
 
             // Create the forum
             User owner = User.findByLogin((String) session.getAttribute("login"));
-            Forum forum = new Forum(title, date, time_validity, owner);
+            DateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+            
+            Forum forum = new Forum(title, mysqlDateFormat.format(begin_date), mysqlDateFormat.format(end_date), owner);
 
             // Try save the forum
             forum.save();
@@ -87,8 +89,7 @@ public class ForumManager extends HttpServlet {
                 out.println("</html>");
             }
         }
-        }
-    }
+     }
 
     /**
      * Handles the HTTP GET method.
@@ -103,7 +104,7 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         try {
         	doRequest(request, response);
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ServletException | ParseException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -121,7 +122,7 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         try {
             doRequest(request, response);
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ServletException | ParseException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }

@@ -40,9 +40,9 @@ public class ForumValidation extends HttpServlet{
 
 			// Get values from the form
 			String title = request.getParameter("title");
-			DateFormat df = new SimpleDateFormat("YYYY-MM-DD'T'HH:MM");	
-			Date begin_date = df.parse(request.getParameter("begin_date"));
-			Date end_date = df.parse(request.getParameter("end_date"));
+			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+			Date begin_date = df.parse(request.getParameter("begin_date")+":00Z");
+			Date end_date = df.parse(request.getParameter("end_date")+":00Z");
 
 			if (title == null || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs non renseignés");
@@ -51,6 +51,11 @@ public class ForumValidation extends HttpServlet{
 				isForumValid = false;
 			} else if ("".equals(title) || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs vides");
+				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
+				rd.forward(request, response);
+				isForumValid = false;
+			} else if (end_date.before(begin_date)) {
+				System.out.println("End date is before begin date");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
 				rd.forward(request, response);
 				isForumValid = false;
