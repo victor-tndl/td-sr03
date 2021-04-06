@@ -63,7 +63,6 @@ public class ForumManager extends HttpServlet {
             // Create the forum
             User owner = User.findByLogin((String) session.getAttribute("login"));
             DateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
-            
             Forum forum = new Forum(title, mysqlDateFormat.format(begin_date), mysqlDateFormat.format(end_date), owner);
 
             // Try save the forum

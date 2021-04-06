@@ -42,7 +42,7 @@ public class UserValidation extends HttpServlet{
         String firstName = request.getParameter("User first name");
         String familyName = request.getParameter("User familly name");
         String login = request.getParameter("User email");
-        String password = request.getParameter("User password");
+        String password = User.hashPassword(request.getParameter("User password"));
         String gender = request.getParameter("gender");
 
         if (firstName == null || familyName == null || login == null || password == null) {

@@ -1,6 +1,8 @@
 package model;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -104,7 +106,27 @@ public class User extends ActiveRecordBase {
 	public void setRole(String role) {
 		this.role = Roles.valueOf(role);
 	}
-	
+
+	public static String hashPassword(String _password) {
+		String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(_password.getBytes());
+            byte[] bytes = md.digest();
+
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i< bytes.length ;i++)
+            {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+			generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+		return generatedPassword;
+	}
+
 	// SQL queries
 	@Override
 	protected String _insert() {

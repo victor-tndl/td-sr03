@@ -43,7 +43,7 @@ public class ConnexionController extends HttpServlet{
         for (ListIterator<User> usersIterator = users.listIterator(); usersIterator.hasNext();) {
         	User user = usersIterator.next();
             if (user.getLogin().equals(request.getParameter("username"))
-            		&& user.getPassword().equals(request.getParameter("password"))) {
+            		&& user.getPassword().equals(User.hashPassword(request.getParameter("password")))) {
             	searchedUser = user;
                 break;
             } 
@@ -66,7 +66,7 @@ public class ConnexionController extends HttpServlet{
                 out.println("</body>");
                 out.println("</html>");
             }
-        } else if (!searchedUser.getPassword().equals(request.getParameter("password"))) {
+        } else if (!searchedUser.getPassword().equals(User.hashPassword(request.getParameter("password")))) {
             response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 // TODO: Improve and use jsp
@@ -173,7 +173,7 @@ public class ConnexionController extends HttpServlet{
     @Override
     public void init() throws ServletException {
         super.init();
-        User user = new User("admin","admin", "admin@admin", "admin", "Male");
+        User user = new User("admin","admin", "admin@admin", User.hashPassword("admin"), "Male");
         try {
             user.save();
         } catch (ClassNotFoundException | SQLException | IOException e) {

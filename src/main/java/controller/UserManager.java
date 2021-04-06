@@ -67,7 +67,7 @@ public class UserManager extends HttpServlet{
             String lastName = request.getParameter("User familly name");
             String mail = request.getParameter("User email");
             String gender = request.getParameter("gender");
-            String password = request.getParameter("User password");
+            String password = User.hashPassword(request.getParameter("User password"));
 
             // Create the user
             User user = new User(lastName, familyName, mail, password, gender);
