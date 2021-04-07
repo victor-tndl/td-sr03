@@ -1,2 +1,2 @@
 INSERT INTO `sr03`.`user` (family_name, first_name, login, is_admin, gender, password)
-    VALUES ("admin", "admin", "admin@admin", 1, 1, "21232f297a57a5a743894a0e4a801fc3");
+    VALUES ("admin", "admin", "admin@admin", 1, 1, "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918");

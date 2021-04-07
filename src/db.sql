@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `sr03`.`user` (
   `login` varchar(45) UNIQUE NOT NULL,
   `is_admin` tinyint(4) DEFAULT '0',
   `gender` tinyint(4) DEFAULT '0',
-  `password` varchar(45) DEFAULT NULL,
+  `password` varchar(70) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 

@@ -110,17 +110,14 @@ public class User extends ActiveRecordBase {
 	public static String hashPassword(String _password) {
 		String generatedPassword = null;
         try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(_password.getBytes());
-            byte[] bytes = md.digest();
-
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = md.digest(_password.getBytes());
             StringBuilder sb = new StringBuilder();
             for(int i=0; i< bytes.length ;i++)
             {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
-
-			generatedPassword = sb.toString();
+            generatedPassword = sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
