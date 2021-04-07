@@ -7,6 +7,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -83,6 +85,7 @@ public class ForumManager extends HttpServlet {
                 out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
                 out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
                 out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
+                out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
                 out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                 out.println("</body>");
                 out.println("</html>");
@@ -101,10 +104,57 @@ public class ForumManager extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-        	doRequest(request, response);
-        } catch (ServletException | ParseException | ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+        // Get user's session
+        HttpSession session = request.getSession();
+
+        // Send html response
+        response.setContentType("text/html;charset=UTF-8");
+
+        if (session.getAttribute("login") == null || "Admin".equals(session.getAttribute("role"))==false) {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+                out.println("<title> Non autorisé</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
+                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        } else {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<title>Forums list</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Liste des forums:</h1>");
+                out.println("<ul>");
+
+                try {
+                	List<Forum> forums = Forum.findAll();
+
+                    // Iterate over all the users
+                    Iterator<Forum> usersIterator = forums.iterator();
+                    while(usersIterator.hasNext()) {
+                        out.println("<li>");
+                        out.println(usersIterator.next().toString());
+                        out.println("</li>"); 
+                    }
+                } catch (Exception e) {
+					e.printStackTrace();
+				}
+
+                out.println("</ul>");
+                out.println("</body>");
+                out.println("</html>");
+            }
         }
     }
 

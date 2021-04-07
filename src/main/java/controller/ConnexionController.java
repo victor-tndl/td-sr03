@@ -97,6 +97,7 @@ public class ConnexionController extends HttpServlet{
                     out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
                     out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
                     out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
+                    out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
                     out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                     out.println("</ul>");
                     out.println("</nav>");

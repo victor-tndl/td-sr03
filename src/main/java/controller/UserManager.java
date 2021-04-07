@@ -94,6 +94,7 @@ public class UserManager extends HttpServlet{
                 out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
                 out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
                 out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
+                out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
                 out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
                 out.println("</body>");
                 out.println("</html>");
@@ -145,7 +146,7 @@ public class UserManager extends HttpServlet{
                 out.println("<body>");
                 out.println("<h1>Liste des utilisateurs:</h1>");
                 out.println("<ul>");
-                
+
                 try {
                 	List<User> users = User.findAll();
 
@@ -159,7 +160,6 @@ public class UserManager extends HttpServlet{
                 } catch (Exception e) {
 					e.printStackTrace();
 				}
-                
 
                 out.println("</ul>");
                 out.println("</body>");

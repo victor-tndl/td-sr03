@@ -36,7 +36,7 @@ public class Forum extends ActiveRecordBase {
 	@Override
     public String toString() {
         return "Forum {" + "title=" + title + ", begin_date=" + begin_date + ""
-               + ", time validity=" + end_date  + ", owner=" + owner.getFamilyName() + '}';
+               + ", end_date=" + end_date  + ", owner=" + owner.getFamilyName() + '}';
     }
 
 	// Setters and getters
