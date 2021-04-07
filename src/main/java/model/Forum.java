@@ -2,6 +2,7 @@ package model;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -99,9 +100,11 @@ public class Forum extends ActiveRecordBase {
 	public static Forum findByTitle(String _title) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-        Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM forum" 
-			+ " WHERE title='" + _title + "'");
+		String query = "SELECT * FROM forum WHERE title=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, _title);
+
+		ResultSet res = ps.executeQuery();
 
         if (res.next()) {
             Forum forum = new Forum(res);
@@ -130,8 +133,11 @@ public class Forum extends ActiveRecordBase {
 		List <Forum> forums = new ArrayList<Forum>() ;
         
         Connection conn = ConfigConnectionClass.getConnection();
-        Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM forum WHERE owner_id ='" + _user +"'");
+		String query = "SELECT * FROM forum WHERE owner_id=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, String.valueOf(_user.getId()));
+
+		ResultSet res = ps.executeQuery();
 
         while (res.next()) {
             Forum newForum= new Forum(res);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -157,10 +158,12 @@ public class User extends ActiveRecordBase {
 	public static User findByFamilyNameAndFirstName(String _first_name, String _family_name) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-        Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM user" 
-			+ " WHERE first_name='" + _first_name + "'"
-			+ " AND family_name='" + _family_name +"'" );
+        String query = "SELECT * FROM user WHERE first_name=? AND family_name=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, _first_name);
+		ps.setString(2, _family_name);
+
+        ResultSet res = ps.executeQuery();
 
         if (res.next()) {
             User user = new User(res);
@@ -173,9 +176,11 @@ public class User extends ActiveRecordBase {
 	public static User findByLogin(String _login) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-        Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM user" 
-			+ " WHERE login='" + _login + "'");
+		String query = "SELECT * FROM user WHERE login=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, _login);
+
+        ResultSet res = ps.executeQuery();
 
         if (res.next()) {
             User user = new User(res);
@@ -188,9 +193,11 @@ public class User extends ActiveRecordBase {
 	public static User findById(int _id) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-        Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM user" 
-			+ " WHERE id='" + _id + "'");
+		String query = "SELECT * FROM user WHERE id=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, String.valueOf(_id));
+
+		ResultSet res = ps.executeQuery();
 
         if (res.next()) {
             User user = new User(res);
