@@ -94,8 +94,8 @@ public class ConnexionController extends HttpServlet{
                     out.println("<h1>Hello " + session.getAttribute("login") + "</h1>");
                     out.println("<nav> <ul>");
                     out.println("<li>Connected</li>");
-                    out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
-                    out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
+                    out.println("<li><a href='newUser.jsp'>Créer un nouveau utilisateur</a></li>");
+                    out.println("<li><a href='newForum.jsp'>Créer un nouveau forum</a></li>");
                     out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
                     out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
                     out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");

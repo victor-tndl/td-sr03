@@ -47,12 +47,12 @@ public class UserValidation extends HttpServlet{
 
         if (firstName == null || familyName == null || login == null || password == null) {
             System.out.println("Champs non renseignés");
-            RequestDispatcher rd = request.getRequestDispatcher("newUser.html");
+            RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
             rd.forward(request, response);
             isUserValid = false;
         } else if ("".equals(firstName) || "".equals(familyName) || "".equals(login) || "".equals(password)) {
             System.out.println("Champs vides");
-            RequestDispatcher rd = request.getRequestDispatcher("newUser.html");
+            RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
             rd.forward(request, response);
             isUserValid = false;
         } else {
@@ -64,7 +64,7 @@ public class UserValidation extends HttpServlet{
             }
             if (user != null) {
                 System.out.println("email déjà utilisé");
-                RequestDispatcher rd = request.getRequestDispatcher("newUser.html");
+                RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
                 rd.forward(request, response);
                 isUserValid = false;
             }
@@ -77,7 +77,7 @@ public class UserValidation extends HttpServlet{
             	isUserValid = true;
             } else {
             	isUserValid = false;
-                RequestDispatcher rd = request.getRequestDispatcher("newUser.html");
+                RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
                 // Abort insertion
                 rd.forward(request, response);
             }

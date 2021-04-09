@@ -46,7 +46,7 @@ public class ForumManager extends HttpServlet {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
                 out.println("<title> Non autorisé</title>");
                 out.println("</head>");
                 out.println("<body>");
@@ -82,8 +82,8 @@ public class ForumManager extends HttpServlet {
                 out.println("<body>");
                 out.println("<li>Un nouveau forum est ajouté</li>");
                 out.println(forum.toString());
-                out.println("<li><a href='newUser.html'>Créer un nouveau utilisateur</a></li>");
-                out.println("<li><a href='newForum.html'>Créer un nouveau forum</a></li>");
+                out.println("<li><a href='newUser.jsp'>Créer un nouveau utilisateur</a></li>");
+                out.println("<li><a href='newForum.jsp'>Créer un nouveau forum</a></li>");
                 out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
                 out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
                 out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
@@ -116,7 +116,7 @@ public class ForumManager extends HttpServlet {
                 out.println("<!DOCTYPE html>");
                 out.println("<html>");
                 out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
                 out.println("<title> Non autorisé</title>");
                 out.println("</head>");
                 out.println("<body>");
@@ -175,4 +175,47 @@ public class ForumManager extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Handles the HTTP DELETE method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        HttpSession session = request.getSession();
+        if (session.getAttribute("login") == null || "Admin".equals(session.getAttribute("role"))==false) {
+            try (PrintWriter out = response.getWriter()) {
+                // TODO: Improve and use jsp
+                out.println("<!DOCTYPE html>");
+                out.println("<html>");
+                out.println("<head>");
+                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
+                out.println("<title> Non autorisé</title>");
+                out.println("</head>");
+                out.println("<body>");
+                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
+                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
+                out.println("</body>");
+                out.println("</html>");
+            }
+        } else {
+            String forumId = request.getParameter("forum_id");
+            if (forumId != null) {
+                try {
+                    Forum forumToDelete = Forum.findById(Integer.parseInt(forumId, 10));
+                    if (forumToDelete != null) {
+                        forumToDelete.delete();
+                    }
+                } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    } 
 }

@@ -38,7 +38,7 @@ public class DeconnexionController extends HttpServlet{
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<meta http-equiv='refresh' content='5; URL=connexion.html' />");
+            out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
             out.println("<title>Deconnexion</title>");
             out.println("</head>");
             out.println("<body>");

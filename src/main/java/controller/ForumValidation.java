@@ -46,17 +46,17 @@ public class ForumValidation extends HttpServlet{
 
 			if (title == null || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs non renseignés");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
+				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);
 				isForumValid = false;
 			} else if ("".equals(title) || begin_date.equals(null) || end_date.equals(null)) {
 				System.out.println("Champs vides");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
+				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);
 				isForumValid = false;
 			} else if (end_date.before(begin_date)) {
 				System.out.println("End date is before begin date");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
+				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);
 				isForumValid = false;
 			}
@@ -68,7 +68,7 @@ public class ForumValidation extends HttpServlet{
 					isForumValid = true;
 				} else {
 					isForumValid = false;
-					RequestDispatcher rd = request.getRequestDispatcher("newForum.html");
+					RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 					// Abort insertion
 					rd.forward(request, response);
 				}

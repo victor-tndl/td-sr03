@@ -146,4 +146,21 @@ public class Forum extends ActiveRecordBase {
 
         return forums;	
 	}
+
+	public static Forum findById(int _id) throws ClassNotFoundException, IOException, SQLException {
+        
+        Connection conn = ConfigConnectionClass.getConnection();
+		String query = "SELECT * FROM user WHERE id=?";
+		PreparedStatement ps = conn.prepareStatement(query);
+		ps.setString(1, String.valueOf(_id));
+
+		ResultSet res = ps.executeQuery();
+
+        if (res.next()) {
+            Forum forum = new Forum(res);
+            return forum;
+        }
+
+        return null;	
+	}
 }
