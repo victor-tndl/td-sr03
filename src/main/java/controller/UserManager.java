@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -47,14 +46,14 @@ public class UserManager extends HttpServlet{
 			rd.forward(request, response);
         } else {
             // Get values from the form
-            String familyName = request.getParameter("User first name");
-            String lastName = request.getParameter("User familly name");
-            String mail = request.getParameter("User email");
+            String firstName = request.getParameter("firstName");
+            String familyName = request.getParameter("familyName");
+            String login = request.getParameter("login");
+            String password = User.hashPassword(request.getParameter("password"));
             String gender = request.getParameter("gender");
-            String password = User.hashPassword(request.getParameter("User password"));
 
             // Create the user
-            User user = new User(lastName, familyName, mail, password, gender);
+            User user = new User(firstName, familyName, login, password, gender);
 
             if (request.getParameter("role") != null) {
                 user.setRole(request.getParameter("role"));
@@ -140,20 +139,8 @@ public class UserManager extends HttpServlet{
         HttpSession session = request.getSession();
         Token token = (Token) session.getAttribute("token");
         if (token.getLogin() == null || !token.getIsAdmin()) {
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
-                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
+			rd.forward(request, response);
         } else {
             String userId = request.getParameter("user_id");
             if (userId != null) {

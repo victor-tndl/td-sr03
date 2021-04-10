@@ -38,20 +38,19 @@ public class UserValidation extends HttpServlet{
 		boolean isUserValid = true;
 
         // Get values from the form
-        String firstName = request.getParameter("User first name");
-        String familyName = request.getParameter("User familly name");
-        String login = request.getParameter("User email");
-        String password = User.hashPassword(request.getParameter("User password"));
-        String gender = request.getParameter("gender");
+        String firstName = request.getParameter("firstName");
+        String familyName = request.getParameter("familyName");
+        String login = request.getParameter("login");
+        String password = User.hashPassword(request.getParameter("password"));
 
         if (firstName == null || familyName == null || login == null || password == null) {
-            System.out.println("Champs non renseignés");
-            RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
+            request.setAttribute("error", "Empty fields");
+            RequestDispatcher rd = request.getRequestDispatcher("newUserError.jsp");
             rd.forward(request, response);
             isUserValid = false;
         } else if ("".equals(firstName) || "".equals(familyName) || "".equals(login) || "".equals(password)) {
-            System.out.println("Champs vides");
-            RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
+            request.setAttribute("error", "Empty fields");
+            RequestDispatcher rd = request.getRequestDispatcher("newUserError.jsp");
             rd.forward(request, response);
             isUserValid = false;
         } else {
@@ -62,8 +61,8 @@ public class UserValidation extends HttpServlet{
                 e.printStackTrace();
             }
             if (user != null) {
-                System.out.println("email déjà utilisé");
-                RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
+                request.setAttribute("error", "Email (login) already used");
+                RequestDispatcher rd = request.getRequestDispatcher("newUserError.jsp");
                 rd.forward(request, response);
                 isUserValid = false;
             }
@@ -71,13 +70,13 @@ public class UserValidation extends HttpServlet{
 
         if (request.getParameter("validator") != null) {
             // des doublons ont été détectés et l'utilisateur à valider son choix
-            if ("oui".equals(request.getParameter("valider"))) {
+            if ("yes".equals(request.getParameter("validate"))) {
                 // on insère les doublons
             	isUserValid = true;
             } else {
+                // Abort insertion
             	isUserValid = false;
                 RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
-                // Abort insertion
                 rd.forward(request, response);
             }
         } else {
@@ -90,7 +89,7 @@ public class UserValidation extends HttpServlet{
             if (user != null) {
                 isUserValid = false;
                 RequestDispatcher rd = request.getRequestDispatcher("newUserDuplicate.jsp");
-                rd.forward(request, response);
+                rd.include(request, response);
             }
         }
         

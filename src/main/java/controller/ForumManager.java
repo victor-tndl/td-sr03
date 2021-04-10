@@ -107,22 +107,8 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         
         if (ConnexionController.isConnected(request) == false) {
-            // Send html response
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1></h1>");
-                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+            RequestDispatcher rd = request.getRequestDispatcher("toConnxion.jsp");
+			rd.forward(request, response);
         } else {
             // Get user's session and token
             HttpSession session = request.getSession();
@@ -179,20 +165,8 @@ public class ForumManager extends HttpServlet {
         
         HttpSession session = request.getSession();
         if (ConnexionController.isConnected(request) == false) {
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
-                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+            RequestDispatcher rd = request.getRequestDispatcher("toConnxion.jsp");
+			rd.forward(request, response);
         } else if ( "Admin".equals(session.getAttribute("role")) == false) {
             // TODO: Add delete jsp
         } else {
