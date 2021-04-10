@@ -12,31 +12,31 @@ import java.util.List;
 public class Forum extends ActiveRecordBase {
 
 	String title;
-	String begin_date;
-	String end_date;
+	String beginDate;
+	String endDate;
   	User owner = null;
 
-	public Forum(String _title, String _begin_date, String _end_date, User _owner) {
+	public Forum(String _title, String _beginDate, String _endDate, User _owner) {
 		super();
 		this.title = _title;
-		this.begin_date = _begin_date;
-		this.end_date = _end_date;
+		this.beginDate = _beginDate;
+		this.endDate = _endDate;
 		this.owner = _owner;
 	}
 
 	public Forum(ResultSet res) throws SQLException, ClassNotFoundException, IOException {
 		this.id = res.getInt("id");
 		this.title = res.getString("title");
-		this.begin_date = res.getString("begin_date");
-		this.end_date = res.getString("end_date");
+		this.beginDate = res.getString("begin_date");
+		this.endDate = res.getString("end_date");
 		this.owner = User.findById(res.getInt("owner_id"));
         this._buitFromDB = true;
 	}
 
 	@Override
     public String toString() {
-        return "Forum {" + "title=" + title + ", begin_date=" + begin_date + ""
-               + ", end_date=" + end_date  + ", owner=" + owner.getFamilyName() + '}';
+        return "Forum {" + "title=" + title + ", begin_date=" + beginDate + ""
+               + ", end_date=" + endDate  + ", owner=" + owner.getFamilyName() + '}';
     }
 
 	// Setters and getters
@@ -53,16 +53,16 @@ public class Forum extends ActiveRecordBase {
 		this.title = _title;
 	}
 	public String getBeginDate() {
-		return begin_date;
+		return beginDate;
 	}
-	public void setBeginDate(String _date) {
-		this.begin_date = _date;
+	public void setBeginDate(String _beginDate) {
+		this.beginDate = _beginDate;
 	}
 	public String getEndDate() {
-		return end_date;
+		return endDate;
 	}
-	public void setEndDate(String _end_date) {
-		this.end_date = _end_date;
+	public void setEndDate(String _endDate) {
+		this.endDate = _endDate;
 	}
 	public User getOwner() {
 		return owner;
@@ -77,8 +77,8 @@ public class Forum extends ActiveRecordBase {
 		return "INSERT INTO forum (title, begin_date, end_date, owner_id)"
 				+ " VALUES("
 				+ "'" + title +  "',"
-				+ "'" + begin_date +  "',"
-				+ "'" + end_date +  "',"
+				+ "'" + beginDate +  "',"
+				+ "'" + endDate +  "',"
 				+ "'" + owner.getId() +  "');";
 	}
 
@@ -86,8 +86,8 @@ public class Forum extends ActiveRecordBase {
 	protected String _update() {
 		return "UPDATE forum"
 				+ " SET title=" + title
-				+ ", SET begin_date=" + begin_date
-				+ ", SET end_date=" + end_date
+				+ ", SET begin_date=" + beginDate
+				+ ", SET end_date=" + endDate
 				+ ", SET owner_id=" + owner.getId()
 				+ ", WHERE id=" + id;
 	}

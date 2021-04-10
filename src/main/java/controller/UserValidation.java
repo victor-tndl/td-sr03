@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
@@ -90,29 +89,8 @@ public class UserValidation extends HttpServlet{
             }
             if (user != null) {
                 isUserValid = false;
-                try (PrintWriter out = response.getWriter()) {
-                    // TODO: Improve and use jsp
-                    out.println("<!DOCTYPE html>");
-                    out.println("<html>");
-                    out.println("<head>");
-                    out.println("<title>Servlet UserValidation</title>");
-                    out.println("</head>");
-                    out.println("<body>");
-                    out.println("<h1>Un utilisateur avec les mêmes nom et prénom existe déjà. Voulez-vous l'enregistrer ?  </h1>");
-                    out.println("<form method='POST' action='userValidation'>");
-                    out.println("Oui <input type='radio' name='valider' value='oui' /> ");
-                    out.println("Nom <input type='radio' name='valider' value='non' />");
-                    out.println("<input type='hidden' name='User first name' value='" + firstName + "'/>");
-                    out.println("<input type='hidden' name='User familly name' value='" + familyName + "'/>");
-                    out.println("<input type='hidden' name='User email' value='" + login + "'/>");
-                    out.println("<input type='hidden' name='gender' value='" + gender + "'/>");
-                    out.println("<input type='hidden' name='User password' value='" + password + "' />");
-                    out.println("<br>");
-                    out.println("<input type ='submit' value='Envoyer' name='validator' />");
-                    out.println("</form>");
-                    out.println("</body>");
-                    out.println("</html>");
-                }
+                RequestDispatcher rd = request.getRequestDispatcher("newUserDuplicate.jsp");
+                rd.forward(request, response);
             }
         }
         

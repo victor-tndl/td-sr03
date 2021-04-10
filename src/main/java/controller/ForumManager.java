@@ -7,9 +7,9 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.Forum;
+import model.Token;
 import model.User;
-
 
 @WebServlet(name="forumManager",urlPatterns={"/forumManager"})
 public class ForumManager extends HttpServlet {
@@ -40,7 +40,7 @@ public class ForumManager extends HttpServlet {
         // Send html response
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
-        if (session.getAttribute("login") == null) {
+        if (session.getAttribute("token") == null) {
             try (PrintWriter out = response.getWriter()) {
                 // TODO: Improve and use jsp
                 out.println("<!DOCTYPE html>");
@@ -63,7 +63,8 @@ public class ForumManager extends HttpServlet {
 			Date end_date = df.parse(request.getParameter("end_date")+":00Z");
 
             // Create the forum
-            User owner = User.findByLogin((String) session.getAttribute("login"));
+            Token token = (Token) session.getAttribute("token");
+            User owner = User.findByLogin(token.getLogin());
             DateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
             Forum forum = new Forum(title, mysqlDateFormat.format(begin_date), mysqlDateFormat.format(end_date), owner);
 
@@ -104,13 +105,10 @@ public class ForumManager extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Get user's session
-        HttpSession session = request.getSession();
-
-        // Send html response
-        response.setContentType("text/html;charset=UTF-8");
-
-        if (session.getAttribute("login") == null || "Admin".equals(session.getAttribute("role"))==false) {
+        
+        if (ConnexionController.isConnected(request) == false) {
+            // Send html response
+            response.setContentType("text/html;charset=UTF-8");
             try (PrintWriter out = response.getWriter()) {
                 // TODO: Improve and use jsp
                 out.println("<!DOCTYPE html>");
@@ -120,41 +118,32 @@ public class ForumManager extends HttpServlet {
                 out.println("<title> Non autorisé</title>");
                 out.println("</head>");
                 out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté ou vous n'êtes pas admin</h1>");
+                out.println("<h1></h1>");
                 out.println("<span>Vous allez être redirigé vers la page connexion</span>");
                 out.println("</body>");
                 out.println("</html>");
             }
         } else {
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Forums list</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Liste des forums:</h1>");
-                out.println("<ul>");
+            // Get user's session and token
+            HttpSession session = request.getSession();
+            Token token = (Token) session.getAttribute("token");
 
-                try {
-                	List<Forum> forums = Forum.findAll();
-
-                    // Iterate over all the users
-                    Iterator<Forum> usersIterator = forums.iterator();
-                    while(usersIterator.hasNext()) {
-                        out.println("<li>");
-                        out.println(usersIterator.next().toString());
-                        out.println("</li>"); 
-                    }
-                } catch (Exception e) {
-					e.printStackTrace();
-				}
-
-                out.println("</ul>");
-                out.println("</body>");
-                out.println("</html>");
+            List<Forum> allForums = null;
+            try {
+                if (token.getIsAdmin() == true) {
+                    // The user is an admin
+                    allForums = Forum.findAll();
+                } else {
+                    allForums = Forum.findByUser(User.findByLogin(token.getLogin()));
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                e.printStackTrace();
             }
+
+            // Redirect the user to the wanted page with allForums in parameter
+            request.setAttribute("allForums", allForums);
+            RequestDispatcher rd = request.getRequestDispatcher("forums.jsp");
+			rd.forward(request, response);
         }
     }
 
@@ -189,7 +178,7 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        if (session.getAttribute("login") == null || "Admin".equals(session.getAttribute("role"))==false) {
+        if (ConnexionController.isConnected(request) == false) {
             try (PrintWriter out = response.getWriter()) {
                 // TODO: Improve and use jsp
                 out.println("<!DOCTYPE html>");
@@ -204,6 +193,8 @@ public class ForumManager extends HttpServlet {
                 out.println("</body>");
                 out.println("</html>");
             }
+        } else if ( "Admin".equals(session.getAttribute("role")) == false) {
+            // TODO: Add delete jsp
         } else {
             String forumId = request.getParameter("forum_id");
             if (forumId != null) {
@@ -212,6 +203,8 @@ public class ForumManager extends HttpServlet {
                     if (forumToDelete != null) {
                         forumToDelete.delete();
                     }
+                    RequestDispatcher rd = request.getRequestDispatcher("dashboard.jsp");
+			        rd.forward(request, response);
                 } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
                 }
