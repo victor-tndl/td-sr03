@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Token;
+import model.SessionToken;
 import model.User;
 
 @WebServlet(name ="userManager",urlPatterns={"/userManager"})
@@ -86,10 +86,10 @@ public class UserManager extends HttpServlet{
         } else {
             // Get user's session and token
             HttpSession session = request.getSession();
-            Token token = (Token) session.getAttribute("token");
+            SessionToken token = (SessionToken) session.getAttribute("sessionToken");
             List<User> allUsers = null;
             try {
-                if (token.getIsAdmin() == true) {
+                if (token.getUserIsAdmin() == true) {
                     // The user is an admin
                     allUsers = User.findAll();
                 } else {
@@ -137,8 +137,8 @@ public class UserManager extends HttpServlet{
             throws ServletException, IOException {
         
         HttpSession session = request.getSession();
-        Token token = (Token) session.getAttribute("token");
-        if (token.getLogin() == null || !token.getIsAdmin()) {
+        SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+        if (token.getUserLogin() == null || !token.getUserIsAdmin()) {
             RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
         } else {

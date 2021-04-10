@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Token;
+import model.SessionToken;
 import model.User;
 
 
@@ -60,7 +60,7 @@ public class ConnexionController extends HttpServlet{
             rd.forward(request, response);
         } else {
             HttpSession session = request.getSession();
-            session.setAttribute("token", new Token(searchedUser));
+            session.setAttribute("sessionToken", new SessionToken(searchedUser));
             RequestDispatcher rd = request.getRequestDispatcher("dashboard.jsp");
             rd.forward(request, response);
         }
@@ -109,8 +109,8 @@ public class ConnexionController extends HttpServlet{
     public static boolean isConnected(HttpServletRequest request) {
         // Get user's session and token
         HttpSession session = request.getSession();
-        Token token = (Token) session.getAttribute("token");
-        if (token.getLogin() == null || "".equals(token.getLogin()) == true) {
+        SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+        if (token.getUserLogin() == null || "".equals(token.getUserLogin()) == true) {
             return false;
         }
         return true;

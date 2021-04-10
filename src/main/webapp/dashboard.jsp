@@ -7,8 +7,8 @@
         <title>Navigation Administrateur</title>
     </head>
     <body>
-        <h1>Bonjour <c:out value="${sessionScope.token.firstName}"/></h1>
-        <c:if test="${sessionScope.token.isAdmin == true}">
+        <h1>Bonjour <c:out value="${sessionScope.sessionToken.firstName}"/></h1>
+        <c:if test="${sessionScope.tokesessionTokenn.isAdmin == true}">
             <nav>
                 <ul>
                     Connected <br>
@@ -20,10 +20,11 @@
                 </ul>
             </nav>
         </c:if>
-        <c:if test="${sessionScope.token.isAdmin != true}">
+        <c:if test="${sessionScope.sessionToken.isAdmin != true}">
             <nav>
                 <ul>
                     Connected <br>
+                    <li><a href='newForum.jsp'>Create a new forum</a></li>
                     <li><a href='forumManager'>List your forums</a></li>
                     <li><a href='deconnexionController'>Deconnect</a></li>
                 </ul>
