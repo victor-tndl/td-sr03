@@ -5,9 +5,9 @@
 <body>
 	<form action="forumValidation" method="post">
 		<label> Title </label> <input type="text" id="title" name="title"/><br>
-		<label> Date </label> <input type="datetime-local" id="begin_date" name="begin_date"
+		<label> Date </label> <input type="datetime-local" id="beginDate" name="beginDate"
 		pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required><br>
-		<label> Validity Time </label> <input type="datetime-local" id="end_date" name="end_date"
+		<label> Validity Time </label> <input type="datetime-local" id="endDate" name="endDate"
 		pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required><br>
 		<input type="submit" value="Submit">
 	</form>

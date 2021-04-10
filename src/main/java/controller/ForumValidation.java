@@ -41,20 +41,20 @@ public class ForumValidation extends HttpServlet{
 			// Get values from the form
 			String title = request.getParameter("title");
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			Date begin_date = df.parse(request.getParameter("begin_date")+":00Z");
-			Date end_date = df.parse(request.getParameter("end_date")+":00Z");
+			Date beginDate = df.parse(request.getParameter("beginDate")+":00Z");
+			Date endDate = df.parse(request.getParameter("endDate")+":00Z");
 
-			if (title == null || begin_date.equals(null) || end_date.equals(null)) {
+			if (title == null || beginDate.equals(null) || endDate.equals(null)) {
 				System.out.println("Champs non renseignés");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);
 				isForumValid = false;
-			} else if ("".equals(title) || begin_date.equals(null) || end_date.equals(null)) {
+			} else if ("".equals(title) || beginDate.equals(null) || endDate.equals(null)) {
 				System.out.println("Champs vides");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);
 				isForumValid = false;
-			} else if (end_date.before(begin_date)) {
+			} else if (endDate.before(beginDate)) {
 				System.out.println("End date is before begin date");
 				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
 				rd.forward(request, response);

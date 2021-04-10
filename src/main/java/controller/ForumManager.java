@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import model.Forum;
-import model.Token;
+import model.SessionToken;
 import model.User;
 
 @WebServlet(name="forumManager",urlPatterns={"/forumManager"})
@@ -37,62 +36,32 @@ public class ForumManager extends HttpServlet {
      * @throws ParseException
      */
      protected void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ClassNotFoundException, SQLException, ParseException {
-        // Send html response
-        response.setContentType("text/html;charset=UTF-8");
+
         HttpSession session = request.getSession();
-        if (session.getAttribute("token") == null) {
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<meta http-equiv='refresh' content='5; URL=connexion.jsp' />");
-                out.println("<title> Non autorisé</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<h1>Vous n'êtes pas connecté</h1>");
-                out.println("<span>Vous allez être redirigé vers la page connexion</span>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+        if (ConnexionController.isConnected(request) == false) {
+            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
+			rd.forward(request, response);
         } else {
             // Get values from the form
 			String title = request.getParameter("title");
 			DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-			Date begin_date = df.parse(request.getParameter("begin_date")+":00Z");
-			Date end_date = df.parse(request.getParameter("end_date")+":00Z");
+			Date beginDate = df.parse(request.getParameter("beginDate")+":00Z");
+			Date endDate = df.parse(request.getParameter("endDate")+":00Z");
 
             // Create the forum
-            Token token = (Token) session.getAttribute("token");
-            User owner = User.findByLogin(token.getLogin());
+            SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+            User owner = User.findByLogin(token.getUserLogin());
             DateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
-            Forum forum = new Forum(title, mysqlDateFormat.format(begin_date), mysqlDateFormat.format(end_date), owner);
+            Forum forum = new Forum(title, mysqlDateFormat.format(beginDate), mysqlDateFormat.format(endDate), owner);
 
             // Try save the forum
             forum.save();
 
-            // Send html response
-            response.setContentType("text/html;charset=UTF-8");
-            try (PrintWriter out = response.getWriter()) {
-                // TODO: Improve and use jsp
-                out.println("<!DOCTYPE html>");
-                out.println("<html>");
-                out.println("<head>");
-                out.println("<title>Nouvel utilisateur</title>");
-                out.println("</head>");
-                out.println("<body>");
-                out.println("<li>Un nouveau forum est ajouté</li>");
-                out.println(forum.toString());
-                out.println("<li><a href='newUser.jsp'>Créer un nouveau utilisateur</a></li>");
-                out.println("<li><a href='newForum.jsp'>Créer un nouveau forum</a></li>");
-                out.println(" <li><a href='userManager'>Afficher la liste des utilisateurs</a></li>");
-                out.println(" <li><a href='forumManager'>Afficher la liste des forums</a></li>");
-                out.println(" <li><a href='deconnexionController'>Déconnecter</a></li>");
-                out.println("</body>");
-                out.println("</html>");
-            }
+            // Redirect user 
+            RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
+            rd.forward(request, response);        
         }
-     }
+    }
 
     /**
      * Handles the HTTP GET method.
@@ -107,20 +76,20 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         
         if (ConnexionController.isConnected(request) == false) {
-            RequestDispatcher rd = request.getRequestDispatcher("toConnxion.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
         } else {
             // Get user's session and token
             HttpSession session = request.getSession();
-            Token token = (Token) session.getAttribute("token");
+            SessionToken token = (SessionToken) session.getAttribute("sessionToken");
 
             List<Forum> allForums = null;
             try {
-                if (token.getIsAdmin() == true) {
+                if (token.getUserIsAdmin() == true) {
                     // The user is an admin
                     allForums = Forum.findAll();
                 } else {
-                    allForums = Forum.findByUser(User.findByLogin(token.getLogin()));
+                    allForums = Forum.findByUser(User.findByLogin(token.getUserLogin()));
                 }
             } catch (ClassNotFoundException | SQLException e) {
                 e.printStackTrace();
@@ -165,24 +134,51 @@ public class ForumManager extends HttpServlet {
         
         HttpSession session = request.getSession();
         if (ConnexionController.isConnected(request) == false) {
-            RequestDispatcher rd = request.getRequestDispatcher("toConnxion.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
-        } else if ( "Admin".equals(session.getAttribute("role")) == false) {
-            // TODO: Add delete jsp
         } else {
             String forumId = request.getParameter("forum_id");
             if (forumId != null) {
+                Forum forumToDelete = null;
                 try {
-                    Forum forumToDelete = Forum.findById(Integer.parseInt(forumId, 10));
-                    if (forumToDelete != null) {
-                        forumToDelete.delete();
-                    }
-                    RequestDispatcher rd = request.getRequestDispatcher("dashboard.jsp");
-			        rd.forward(request, response);
+                    forumToDelete = Forum.findById(Integer.parseInt(forumId, 10));
                 } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
                 }
+                if (forumToDelete != null) {
+                    if ("Admin".equals(session.getAttribute("role")) == true) {
+                        try {
+                            forumToDelete.delete();
+                            RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
+                            rd.forward(request, response);
+                        } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+                        if (forumToDelete.getOwner().getId() == token.getUserId() ) {
+                            try {
+                                forumToDelete.delete();
+                                RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
+                                rd.forward(request, response);
+                            } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+                            request.setAttribute("error", "You need to be admin or own this forum in order to delete it");
+                            RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
+                            rd.forward(request, response);
+                        }
+                    }
+                }
+
+                request.setAttribute("error", "The forum to delete does not exist");
+                RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
+                rd.forward(request, response);
             }
+            request.setAttribute("error", "Forum id is null");
+            RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
+            rd.forward(request, response);
         }
     } 
 }

@@ -1,2 +1,2 @@
-<p>Successfully create the user</p>
-<%@ include file="newUser.jsp" %>  
+<p>Successfully create the forum</p>
+<%@ include file="newForum.jsp" %>  
