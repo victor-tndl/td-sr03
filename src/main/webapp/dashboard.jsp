@@ -7,8 +7,8 @@
         <title>Navigation Administrateur</title>
     </head>
     <body>
-        <h1>Bonjour <c:out value="${sessionScope.sessionToken.firstName}"/></h1>
-        <c:if test="${sessionScope.tokesessionTokenn.isAdmin == true}">
+        <h1>Bonjour <c:out value="${sessionScope.sessionToken.userFirstName}"/></h1>
+        <c:if test="${sessionScope.sessionToken.userIsAdmin == true}">
             <nav>
                 <ul>
                     Connected <br>
@@ -20,7 +20,7 @@
                 </ul>
             </nav>
         </c:if>
-        <c:if test="${sessionScope.sessionToken.isAdmin != true}">
+        <c:if test="${sessionScope.sessionToken.userIsAdmin != true}">
             <nav>
                 <ul>
                     Connected <br>
