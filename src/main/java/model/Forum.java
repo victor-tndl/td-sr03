@@ -150,7 +150,7 @@ public class Forum extends ActiveRecordBase {
 	public static Forum findById(int _id) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-		String query = "SELECT * FROM user WHERE id=?";
+		String query = "SELECT * FROM forum WHERE id=?";
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, String.valueOf(_id));
 

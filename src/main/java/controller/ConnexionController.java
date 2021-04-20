@@ -110,7 +110,10 @@ public class ConnexionController extends HttpServlet{
         // Get user's session and token
         HttpSession session = request.getSession();
         SessionToken token = (SessionToken) session.getAttribute("sessionToken");
-        if (token.getUserLogin() == null || "".equals(token.getUserLogin()) == true) {
+        if (token == null) {
+        	return false;
+        }
+        if ("".equals(token.getUserLogin()) == true || token.getUserLogin() == null ) {
             return false;
         }
         return true;

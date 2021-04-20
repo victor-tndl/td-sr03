@@ -134,8 +134,8 @@ public class ForumManager extends HttpServlet {
         
         HttpSession session = request.getSession();
         if (ConnexionController.isConnected(request) == false) {
-            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
-			rd.forward(request, response);
+            response.sendError(401, "Not connected");
+            return;
         } else {
             String forumId = request.getParameter("forum_id");
             if (forumId != null) {
@@ -146,39 +146,32 @@ public class ForumManager extends HttpServlet {
                     e.printStackTrace();
                 }
                 if (forumToDelete != null) {
-                    if ("Admin".equals(session.getAttribute("role")) == true) {
+                    SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+                    if (token.getUserIsAdmin()) {
                         try {
                             forumToDelete.delete();
-                            RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
-                            rd.forward(request, response);
+                            return;
                         } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        SessionToken token = (SessionToken) session.getAttribute("sessionToken");
                         if (forumToDelete.getOwner().getId() == token.getUserId() ) {
                             try {
                                 forumToDelete.delete();
-                                RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
-                                rd.forward(request, response);
+                                return;
                             } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                                 e.printStackTrace();
                             }
-                        } else {
-                            request.setAttribute("error", "You need to be admin or own this forum in order to delete it");
-                            RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
-                            rd.forward(request, response);
                         }
                     }
+                    response.sendError(403, "Unhautorized");
+                    return;
                 }
-
-                request.setAttribute("error", "The forum to delete does not exist");
-                RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
-                rd.forward(request, response);
+                response.sendError(404, "Entity not found");
+                return;
             }
-            request.setAttribute("error", "Forum id is null");
-            RequestDispatcher rd = request.getRequestDispatcher("newForumError.jsp");
-            rd.forward(request, response);
         }
+        response.sendError(404, "An error occured");
+        return;
     } 
 }

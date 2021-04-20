@@ -135,12 +135,16 @@ public class UserManager extends HttpServlet{
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
         SessionToken token = (SessionToken) session.getAttribute("sessionToken");
-        if (token.getUserLogin() == null || !token.getUserIsAdmin()) {
-            RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
-			rd.forward(request, response);
+        if (ConnexionController.isConnected(request) == false) {
+        	response.sendError(401, "Not connected");
+            return;
+        }
+        if (!token.getUserIsAdmin()) {
+            response.sendError(403, "Unhautorized");
+            return;
         } else {
             String userId = request.getParameter("user_id");
             if (userId != null) {
@@ -148,11 +152,14 @@ public class UserManager extends HttpServlet{
                     User userToDelete = User.findById(Integer.parseInt(userId, 10));
                     if (userToDelete != null) {
                         userToDelete.delete();
+                        return;
                     }
                 } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
+        response.sendError(404, "An error occured");
+        return;
     }
 }
