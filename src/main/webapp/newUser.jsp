@@ -13,5 +13,6 @@ initial-scale=1.0">
 		<label> Admin </label> <input type="checkbox" name="admin" value="Admin"/> <br>
 		<input type="submit" value="Submit">
 	</form>
+	<%@ include file="dashboard.jsp" %>
 </body>
 </html>
