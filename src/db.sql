@@ -9,9 +9,9 @@ CREATE TABLE IF NOT EXISTS `sr03`.`user` (
   PRIMARY KEY (`id`)
 ) ;
 
-CREATE TABLE IF NOT EXISTS `sr03`.`forum` (
+CREATE TABLE IF NOT EXISTS `sr03`.`chat` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(45) NOT NULL DEFAULT 'new forum',
+  `title` VARCHAR(45) NOT NULL DEFAULT 'new chat',
   `begin_date` DATETIME NOT NULL,
   `end_date` DATETIME NOT NULL,
   `owner_id` INT NOT NULL,

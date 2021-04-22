@@ -9,14 +9,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Forum extends ActiveRecordBase {
+public class Chat extends ActiveRecordBase {
 
 	String title;
 	String beginDate;
 	String endDate;
   	User owner = null;
 
-	public Forum(String _title, String _beginDate, String _endDate, User _owner) {
+	public Chat(String _title, String _beginDate, String _endDate, User _owner) {
 		super();
 		this.title = _title;
 		this.beginDate = _beginDate;
@@ -24,7 +24,7 @@ public class Forum extends ActiveRecordBase {
 		this.owner = _owner;
 	}
 
-	public Forum(ResultSet res) throws SQLException, ClassNotFoundException, IOException {
+	public Chat(ResultSet res) throws SQLException, ClassNotFoundException, IOException {
 		this.id = res.getInt("id");
 		this.title = res.getString("title");
 		this.beginDate = res.getString("begin_date");
@@ -35,7 +35,7 @@ public class Forum extends ActiveRecordBase {
 
 	@Override
     public String toString() {
-        return "Forum {" + "title=" + title + ", begin_date=" + beginDate + ""
+        return "Chat {" + "title=" + title + ", begin_date=" + beginDate + ""
                + ", end_date=" + endDate  + ", owner=" + owner.getFamilyName() + '}';
     }
 
@@ -74,7 +74,7 @@ public class Forum extends ActiveRecordBase {
 	// SQL queries
 	@Override
 	protected String _insert() {
-		return "INSERT INTO forum (title, begin_date, end_date, owner_id)"
+		return "INSERT INTO chat (title, begin_date, end_date, owner_id)"
 				+ " VALUES("
 				+ "'" + title +  "',"
 				+ "'" + beginDate +  "',"
@@ -84,7 +84,7 @@ public class Forum extends ActiveRecordBase {
 
 	@Override
 	protected String _update() {
-		return "UPDATE forum"
+		return "UPDATE chat"
 				+ " SET title=" + title
 				+ ", SET begin_date=" + beginDate
 				+ ", SET end_date=" + endDate
@@ -94,71 +94,71 @@ public class Forum extends ActiveRecordBase {
 
 	@Override
 	protected String _delete() {
-		return "DELETE FROM forum WHERE id=" + id;
+		return "DELETE FROM chat WHERE id=" + id;
 	}
 
-	public static Forum findByTitle(String _title) throws ClassNotFoundException, IOException, SQLException {
+	public static Chat findByTitle(String _title) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-		String query = "SELECT * FROM forum WHERE title=?";
+		String query = "SELECT * FROM chat WHERE title=?";
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, _title);
 
 		ResultSet res = ps.executeQuery();
 
         if (res.next()) {
-            Forum forum = new Forum(res);
-            return forum;
+            Chat chat = new Chat(res);
+            return chat;
         }
 
         return null;	
 	}
 
-	public static List<Forum> findAll() throws ClassNotFoundException, IOException, SQLException {
-		List <Forum> forums = new ArrayList<Forum>() ;
+	public static List<Chat> findAll() throws ClassNotFoundException, IOException, SQLException {
+		List <Chat> chats = new ArrayList<Chat>() ;
         
         Connection conn = ConfigConnectionClass.getConnection();
         Statement sql = conn.createStatement();
-        ResultSet res = sql.executeQuery("SELECT * FROM forum");
+        ResultSet res = sql.executeQuery("SELECT * FROM chat");
 
         while (res.next()) {
-            Forum newForum= new Forum(res);
-            forums.add(newForum);
+            Chat newChat= new Chat(res);
+            chats.add(newChat);
         }
 
-        return forums;	
+        return chats;	
 	}
 
-	public static List<Forum> findByUser(User _user) throws ClassNotFoundException, IOException, SQLException {
-		List <Forum> forums = new ArrayList<Forum>() ;
+	public static List<Chat> findByUser(User _user) throws ClassNotFoundException, IOException, SQLException {
+		List <Chat> chats = new ArrayList<Chat>() ;
         
         Connection conn = ConfigConnectionClass.getConnection();
-		String query = "SELECT * FROM forum WHERE owner_id=?";
+		String query = "SELECT * FROM chat WHERE owner_id=?";
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, String.valueOf(_user.getId()));
 
 		ResultSet res = ps.executeQuery();
 
         while (res.next()) {
-            Forum newForum= new Forum(res);
-            forums.add(newForum);
+            Chat newChat= new Chat(res);
+            chats.add(newChat);
         }
 
-        return forums;	
+        return chats;	
 	}
 
-	public static Forum findById(int _id) throws ClassNotFoundException, IOException, SQLException {
+	public static Chat findById(int _id) throws ClassNotFoundException, IOException, SQLException {
         
         Connection conn = ConfigConnectionClass.getConnection();
-		String query = "SELECT * FROM forum WHERE id=?";
+		String query = "SELECT * FROM chat WHERE id=?";
 		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, String.valueOf(_id));
 
 		ResultSet res = ps.executeQuery();
 
         if (res.next()) {
-            Forum forum = new Forum(res);
-            return forum;
+            Chat chat = new Chat(res);
+            return chat;
         }
 
         return null;	

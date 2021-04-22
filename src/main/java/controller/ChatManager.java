@@ -16,12 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Forum;
+import model.Chat;
 import model.SessionToken;
 import model.User;
 
-@WebServlet(name="forumManager",urlPatterns={"/forumManager"})
-public class ForumManager extends HttpServlet {
+@WebServlet(name="chatManager",urlPatterns={"/chatManager"})
+public class ChatManager extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -41,6 +41,7 @@ public class ForumManager extends HttpServlet {
         if (ConnexionController.isConnected(request) == false) {
             RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
+            return;
         } else {
             // Get values from the form
 			String title = request.getParameter("title");
@@ -48,18 +49,19 @@ public class ForumManager extends HttpServlet {
 			Date beginDate = df.parse(request.getParameter("beginDate")+":00Z");
 			Date endDate = df.parse(request.getParameter("endDate")+":00Z");
 
-            // Create the forum
+            // Create the chat
             SessionToken token = (SessionToken) session.getAttribute("sessionToken");
             User owner = User.findByLogin(token.getUserLogin());
             DateFormat mysqlDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
-            Forum forum = new Forum(title, mysqlDateFormat.format(beginDate), mysqlDateFormat.format(endDate), owner);
+            Chat chat = new Chat(title, mysqlDateFormat.format(beginDate), mysqlDateFormat.format(endDate), owner);
 
-            // Try save the forum
-            forum.save();
+            // Try save the chat
+            chat.save();
 
             // Redirect user 
-            RequestDispatcher rd = request.getRequestDispatcher("newForumSuccess.jsp");
-            rd.forward(request, response);        
+            RequestDispatcher rd = request.getRequestDispatcher("newChatSuccess.jsp");
+            rd.forward(request, response);
+            return;
         }
     }
 
@@ -78,27 +80,36 @@ public class ForumManager extends HttpServlet {
         if (ConnexionController.isConnected(request) == false) {
             RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
+            return;
         } else {
-            // Get user's session and token
-            HttpSession session = request.getSession();
-            SessionToken token = (SessionToken) session.getAttribute("sessionToken");
+            if (request.getParameter("chat_id") != null) {
+                request.setAttribute("chat_id", request.getParameter("chat_id"));
+                RequestDispatcher rd = request.getRequestDispatcher("client.jsp");
+                rd.include(request, response);
+                return;
+            } else {
+                // Get user's session and token
+                HttpSession session = request.getSession();
+                SessionToken token = (SessionToken) session.getAttribute("sessionToken");
 
-            List<Forum> allForums = null;
-            try {
-                if (token.getUserIsAdmin() == true) {
-                    // The user is an admin
-                    allForums = Forum.findAll();
-                } else {
-                    allForums = Forum.findByUser(User.findByLogin(token.getUserLogin()));
+                List<Chat> allChats = null;
+                try {
+                    if (token.getUserIsAdmin() == true) {
+                        // The user is an admin
+                        allChats = Chat.findAll();
+                    } else {
+                        allChats = Chat.findByUser(User.findByLogin(token.getUserLogin()));
+                    }
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
                 }
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            }
 
-            // Redirect the user to the wanted page with allForums in parameter
-            request.setAttribute("allForums", allForums);
-            RequestDispatcher rd = request.getRequestDispatcher("forums.jsp");
-			rd.forward(request, response);
+                // Redirect the user to the wanted page with allChats in parameter
+                request.setAttribute("allChats", allChats);
+                RequestDispatcher rd = request.getRequestDispatcher("chats.jsp");
+                rd.forward(request, response);
+                return;
+            }
         }
     }
 
@@ -115,6 +126,7 @@ public class ForumManager extends HttpServlet {
             throws ServletException, IOException {
         try {
             doRequest(request, response);
+            return;
         } catch (ServletException | ParseException | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
@@ -137,27 +149,27 @@ public class ForumManager extends HttpServlet {
             response.sendError(401, "Not connected");
             return;
         } else {
-            String forumId = request.getParameter("forum_id");
-            if (forumId != null) {
-                Forum forumToDelete = null;
+            String chatId = request.getParameter("chat_id");
+            if (chatId != null) {
+                Chat chatToDelete = null;
                 try {
-                    forumToDelete = Forum.findById(Integer.parseInt(forumId, 10));
+                    chatToDelete = Chat.findById(Integer.parseInt(chatId, 10));
                 } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                     e.printStackTrace();
                 }
-                if (forumToDelete != null) {
+                if (chatToDelete != null) {
                     SessionToken token = (SessionToken) session.getAttribute("sessionToken");
                     if (token.getUserIsAdmin()) {
                         try {
-                            forumToDelete.delete();
+                            chatToDelete.delete();
                             return;
                         } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        if (forumToDelete.getOwner().getId() == token.getUserId() ) {
+                        if (chatToDelete.getOwner().getId() == token.getUserId() ) {
                             try {
-                                forumToDelete.delete();
+                                chatToDelete.delete();
                                 return;
                             } catch (NumberFormatException | ClassNotFoundException | SQLException e) {
                                 e.printStackTrace();

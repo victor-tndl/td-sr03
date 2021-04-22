@@ -44,6 +44,7 @@ public class UserManager extends HttpServlet{
         if (ConnexionController.isConnected(request) == false) {
             RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
+            return;
         } else {
             // Get values from the form
             String firstName = request.getParameter("firstName");
@@ -65,6 +66,7 @@ public class UserManager extends HttpServlet{
             // Redirect the user
             RequestDispatcher rd = request.getRequestDispatcher("newUserSuccess.jsp");
             rd.forward(request, response);
+            return;
         }
    }
 
@@ -83,6 +85,7 @@ public class UserManager extends HttpServlet{
         if (ConnexionController.isConnected(request) == false) {
             RequestDispatcher rd = request.getRequestDispatcher("toConnexion.jsp");
 			rd.forward(request, response);
+            return;
         } else {
             // Get user's session and token
             HttpSession session = request.getSession();
@@ -103,6 +106,7 @@ public class UserManager extends HttpServlet{
             request.setAttribute("allUsers", allUsers);
             RequestDispatcher rd = request.getRequestDispatcher("users.jsp");
             rd.forward(request, response);
+            return;
         }
    }
 

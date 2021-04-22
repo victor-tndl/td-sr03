@@ -54,15 +54,18 @@ public class ConnexionController extends HttpServlet{
             request.setAttribute("error", "Wrong username or password");
             RequestDispatcher rd = request.getRequestDispatcher("connexionError.jsp");
             rd.forward(request, response);
+            return;
         } else if (!searchedUser.getPassword().equals(User.hashPassword(request.getParameter("password")))) {
             request.setAttribute("error", "Wrong username or password");
             RequestDispatcher rd = request.getRequestDispatcher("connexionError.jsp");
             rd.forward(request, response);
+            return;
         } else {
             HttpSession session = request.getSession();
             session.setAttribute("sessionToken", new SessionToken(searchedUser));
             RequestDispatcher rd = request.getRequestDispatcher("dashboard.jsp");
             rd.forward(request, response);
+            return;
         }
     }
 

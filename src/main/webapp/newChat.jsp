@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 </head>
 <body>
-	<form action="forumValidation" method="post">
+	<form action="chatValidation" method="post">
 		<label> Title </label> <input type="text" id="title" name="title"/><br>
 		<label> Date </label> <input type="datetime-local" id="beginDate" name="beginDate"
 		pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required><br>

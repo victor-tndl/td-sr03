@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name="forumValidation",urlPatterns={"/forumValidation"})
-public class ForumValidation extends HttpServlet{
+@WebServlet(name="chatValidation",urlPatterns={"/chatValidation"})
+public class ChatValidation extends HttpServlet{
 
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class ForumValidation extends HttpServlet{
      * @return
 	 * @see HttpServlet#HttpServlet()
      */
-	public ForumValidation() {
+	public ChatValidation() {
 	   super();
 	}
 
@@ -36,7 +36,7 @@ public class ForumValidation extends HttpServlet{
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			boolean isForumValid = true;
+			boolean isChatValid = true;
 
 			// Get values from the form
 			String title = request.getParameter("title");
@@ -46,36 +46,36 @@ public class ForumValidation extends HttpServlet{
 
 			if (title == null || beginDate.equals(null) || endDate.equals(null)) {
 				System.out.println("Champs non renseignés");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
+				RequestDispatcher rd = request.getRequestDispatcher("newChat.jsp");
 				rd.forward(request, response);
-				isForumValid = false;
+				isChatValid = false;
 			} else if ("".equals(title) || beginDate.equals(null) || endDate.equals(null)) {
 				System.out.println("Champs vides");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
+				RequestDispatcher rd = request.getRequestDispatcher("newChat.jsp");
 				rd.forward(request, response);
-				isForumValid = false;
+				isChatValid = false;
 			} else if (endDate.before(beginDate)) {
 				System.out.println("End date is before begin date");
-				RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
+				RequestDispatcher rd = request.getRequestDispatcher("newChat.jsp");
 				rd.forward(request, response);
-				isForumValid = false;
+				isChatValid = false;
 			}
 
 			if (request.getParameter("validator") != null) {
 				// des doublons ont été détectés et l'utilisateur à valider son choix
 				if ("oui".equals(request.getParameter("valider"))) {
 					// on insère les doublons
-					isForumValid = true;
+					isChatValid = true;
 				} else {
-					isForumValid = false;
-					RequestDispatcher rd = request.getRequestDispatcher("newForum.jsp");
+					isChatValid = false;
+					RequestDispatcher rd = request.getRequestDispatcher("newChat.jsp");
 					// Abort insertion
 					rd.forward(request, response);
 				}
 			}
 
-			if (isForumValid) {
-				RequestDispatcher rd = request.getRequestDispatcher("forumManager");
+			if (isChatValid) {
+				RequestDispatcher rd = request.getRequestDispatcher("chatManager");
 				rd.forward(request, response);
 			}
 

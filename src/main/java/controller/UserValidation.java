@@ -65,6 +65,7 @@ public class UserValidation extends HttpServlet{
                 RequestDispatcher rd = request.getRequestDispatcher("newUserError.jsp");
                 rd.forward(request, response);
                 isUserValid = false;
+                return;
             }
         }
 
@@ -78,6 +79,7 @@ public class UserValidation extends HttpServlet{
             	isUserValid = false;
                 RequestDispatcher rd = request.getRequestDispatcher("newUser.jsp");
                 rd.forward(request, response);
+                return;
             }
         } else {
             User user = null;
@@ -90,12 +92,15 @@ public class UserValidation extends HttpServlet{
                 isUserValid = false;
                 RequestDispatcher rd = request.getRequestDispatcher("newUserDuplicate.jsp");
                 rd.include(request, response);
+                return;
             }
         }
         
         if (isUserValid) {
             RequestDispatcher rd = request.getRequestDispatcher("userManager");
             rd.forward(request, response);
+            return;
         }
+        return;
 	}
 }

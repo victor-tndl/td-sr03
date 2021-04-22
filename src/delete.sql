@@ -1,2 +1,2 @@
-DROP TABLE IF EXISTS `sr03`.`forum`;
+DROP TABLE IF EXISTS `sr03`.`chat`;
 DROP TABLE IF EXISTS `sr03`.`user`;

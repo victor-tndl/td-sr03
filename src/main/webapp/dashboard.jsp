@@ -13,9 +13,9 @@
                 <ul>
                     Connected <br>
                     <li><a href='newUser.jsp'>Create a new user</a></li>
-                    <li><a href='newForum.jsp'>Create a new forum</a></li>
+                    <li><a href='newChat.jsp'>Create a new chat</a></li>
                     <li><a href='userManager'>List all users</a></li>
-                    <li><a href='forumManager'>List all forums</a></li>
+                    <li><a href='chatManager'>List all chats</a></li>
                     <li><a href='deconnexionController'>Deconnect</a></li>
                 </ul>
             </nav>
@@ -24,8 +24,8 @@
             <nav>
                 <ul>
                     Connected <br>
-                    <li><a href='newForum.jsp'>Create a new forum</a></li>
-                    <li><a href='forumManager'>List your forums</a></li>
+                    <li><a href='newChat.jsp'>Create a new chat</a></li>
+                    <li><a href='chatManager'>List your chats</a></li>
                     <li><a href='deconnexionController'>Deconnect</a></li>
                 </ul>
             </nav>
