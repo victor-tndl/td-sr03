@@ -50,39 +50,48 @@ public class ChatServer {
     }
 
     /**
-     * Acquisition de notre unique instance ChatServer
+     * Get ChatServer -> singleton
      */
     public static ChatServer getInstance() {
         return ChatServer.singleton;
     }
 
     /**
-     * On maintient toutes les sessions utilisateurs dans une collection.
+     * Get every user's session and chatId connexion
      */
     private HashMap<Integer, ChatServerConnexion> currentSessions = new HashMap<Integer, ChatServerConnexion>();
 
     /**
-     * Cette méthode est déclenchée à chaque connexion d'un utilisateur.
+     * Trigger on every user's connexion
      */
     @OnOpen
-    public void open(Session session, @PathParam("chat_id") String chatId, @PathParam("pseudo") String pseudo ) {
+    public void open(Session session, @PathParam("chat_id") String chatId, @PathParam("pseudo") String pseudo) {
+        // Send connexion message
         sendMessage( "Server >>> Connection established for " + pseudo, chatId );
+
+        // Insert/Get usefull properties
         session.getUserProperties().put( "pseudo", pseudo );
         ChatServerConnexion chatServerConnexion = new ChatServerConnexion( chatId, session);
+
+        // Increment HashMap id
         id++;
+        // Insert the current connexion into currentConnexions (HashMap) 
         currentSessions.put(id, chatServerConnexion);
     }
 
     /**
-     * Cette méthode est déclenchée à chaque déconnexion d'un utilisateur.
+     * Trigger on every user's deconnexion
      */
     @OnClose
     public void close(Session session, @PathParam("chat_id") String chatId) {
         String pseudo = (String) session.getUserProperties().get("pseudo");
+
+        // Iterate over all the connected sessions
         for (Entry<Integer, ChatServerConnexion> entry : currentSessions.entrySet()) {
             Integer key = entry.getKey();
             ChatServerConnexion value = entry.getValue();
 
+            // Check if the current value is the good one
             if (value.getChatId().equals(chatId) && session.getId() == value.getSession().getId()) {
                 System.out.println("Disconnecting userId: "+ value.getSession().getId());
                 currentSessions.remove(key);
@@ -90,11 +99,12 @@ public class ChatServer {
             }
         }
 
+        // Send deconnexion message
         sendMessage("Server >>> Connection closed for " + pseudo, chatId);
     }
 
     /**
-     * Cette méthode est déclenchée en cas d'erreur de communication.
+     * Trigger on every communication error
      */
     @OnError
     public void onError(Throwable error) {
@@ -102,25 +112,23 @@ public class ChatServer {
     }
 
     /**
-     * Cette méthode est déclenchée à chaque réception d'un message utilisateur.
+     * Trigger on every received message
      */
     @OnMessage
     public void handleMessage(String message, Session session, @PathParam("chat_id") String chatId) {
         String pseudo = (String) session.getUserProperties().get("pseudo");
-        String chat_id = (String) session.getUserProperties().get("chat_id");
         String fullMessage = pseudo + " >>> " + message;
         sendMessage(fullMessage, chatId);
     }
 
     /**
-     * Une méthode privée, spécifique é notre exemple.
-     * Elle permet l'envoie d'un message aux participants de la discussion.
+     * Send message to concerned users
      */
     private void sendMessage( String fullMessage, String chatId ) {
-        // Affichage sur la console du server Web.
+        // Print into web console
         System.out.println(fullMessage);
 
-        // On envoie le message é tout le monde.
+        // Send message to every session connected to the same chat (chatId)
         for( ChatServerConnexion chatServerConnexion : currentSessions.values() ) {
             try {
                 if (chatServerConnexion.getChatId().equals(chatId) == true) {
@@ -133,8 +141,7 @@ public class ChatServer {
     }
 
     /**
-     * Permet de ne pas avoir une instance différente par client.
-     * ChatServer est donc gérer en "singleton" et le configurateur utilise ce singleton.
+     * Configure singleton use for ChatServer class
      */
     public static class EndpointConfigurator extends ServerEndpointConfig.Configurator {
         @Override 
